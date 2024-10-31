@@ -14,3 +14,11 @@ gem "rubocop", "~> 1.21"
 gem "tapioca", "~> 0.16.3"
 
 gem "rack", "~> 3.1"
+
+gem "falcon", "~> 0.48.3", group: :development
+
+gem "sorbet-schema", "~> 0.9.2"
+
+gem "rerun", "~> 0.14.0", :group => :development
+
+gem "rack-test", "~> 2.1", :group => :test
