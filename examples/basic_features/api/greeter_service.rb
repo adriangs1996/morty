@@ -3,6 +3,7 @@
 
 require_relative "../../../lib/morty"
 
+# A response contained inside another
 class InnerResponse < T::Struct
   const :message, String
 end
@@ -16,11 +17,11 @@ end
 module GreeterApi
   # An example greeter service
   class SayHi
-    include Morty::Service
+    extend Morty::Service
 
     def initialize; end
 
-    sig { override(allow_incompatible: true).returns(GreeterResponse) }
+    sig { returns(GreeterResponse) }
     def call
       GreeterResponse.new(salute: "Hello World", inner: InnerResponse.new(message: "Hello from inside rerun"))
     end

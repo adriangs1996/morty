@@ -23,15 +23,18 @@ module Morty
   # with optionally requiring a typed params and a typed
   # data (for path and query string params or body params respectively)
   module Service
-    def self.included(service)
+    def self.extended(service)
       SERVICE_TRACKER << service unless SERVICE_TRACKER.include?(service)
     end
 
-    interface!
-
-    sig do
-      abstract.params(params: T.nilable(T::Struct), payload: T.nilable(T::Struct)).returns(T.any(T::Struct, Error))
+    sig { void }
+    def act_as_writer_service!
+      @act_as_writer_service = true
     end
-    def call(params: nil, payload: nil); end
+
+    sig { returns(T::Boolean) }
+    def writer_service?
+      !@act_as_writer_service.nil? && @act_as_writer_service
+    end
   end
 end

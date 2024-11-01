@@ -3,15 +3,21 @@
 
 require "rack"
 require_relative "service"
+require "sorbet-schema"
 
 module Morty
   # Handle an incoming web request and return the web response.
   # The handler is in charge of initialize the data that the service
   # needs to run, or raise an error if it is not capable of doing so.
   class RequestHandler
-    sig { params(service: T.class_of(Morty::Service)).void }
+    sig { params(service: T.untyped).void }
     def initialize(service:)
       @service = service
+    end
+
+    sig { returns(T::Boolean) }
+    def writer?
+      @service.writer_service?
     end
 
     sig { params(request: Rack::Request).returns(Rack::Response) }
@@ -28,7 +34,12 @@ module Morty
                          else
                            @service.new.call
                          end
-      response.write(JSON.dump(service_response.serialize))
+      result = T.let(service_response.serialize_to(:json), Typed::Result[T::Struct, T.untyped])
+      if result.failure?
+        response.status = 422
+        response.write(JSON.dump({ errors: result.error }))
+      end
+      response.write(result.payload)
       response
     end
 

@@ -17,6 +17,8 @@ require_relative "morty/request_handler"
 require_relative "morty/response"
 
 module Morty
+  class WrongMethodError < StandardError; end
+
   class Loader
     def self.load_services(path = "api")
       Dir["#{path}/**/*.rb"].sort.each do |f|
@@ -41,13 +43,32 @@ module Morty
       return path_not_found_response.finish if handler.nil?
 
       handler.call(request).finish
+    rescue WrongMethodError
+      response = Rack::Response.new
+      response.status = 405
+      response.finish
     end
 
     private
 
     sig { params(request: Rack::Request).returns(T.nilable(RequestHandler)) }
     def find_handler(request)
-      @handlers[request.path]
+      handler = @handlers[request.path]
+      return if handler.nil?
+      raise WrongMethodError if handler.writer? && read_request?(request)
+      raise WrongMethodError if !handler.writer? && write_request?(request)
+
+      handler
+    end
+
+    sig { params(request: Rack::Request).returns(T::Boolean) }
+    def write_request?(request)
+      request.request_method&.downcase == "post" || request.request_method&.downcase == "put"
+    end
+
+    sig { params(request: Rack::Request).returns(T::Boolean) }
+    def read_request?(request)
+      request.request_method&.downcase == "get"
     end
 
     sig { returns(Rack::Response) }
