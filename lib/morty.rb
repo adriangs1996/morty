@@ -19,6 +19,15 @@ require_relative "morty/response"
 module Morty
   class WrongMethodError < StandardError; end
 
+  class BadRequestError < StandardError
+    attr_reader :message
+
+    def initialize(message)
+      super
+      @message = message
+    end
+  end
+
   class Loader
     def self.load_services(path = "api")
       Dir["#{path}/**/*.rb"].sort.each do |f|
@@ -46,6 +55,11 @@ module Morty
     rescue WrongMethodError
       response = Rack::Response.new
       response.status = 405
+      response.finish
+    rescue BadRequestError => e
+      response = Rack::Response.new
+      response.status = 422
+      response.write(e.message)
       response.finish
     end
 

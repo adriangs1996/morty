@@ -58,10 +58,6 @@ RSpec.describe "Read service with parameters merged with kwargs" do
     expect(last_response.status).to eq(200)
   end
 
-  it "should respond to ending / as well" do
-    expect(last_response.status).to eq(200)
-  end
-
   it "should return json as default" do
     expect(last_response.body).to eq(
       JSON.dump({ inner: { message: "At age 10 you receive Hello World and salute: true" } })

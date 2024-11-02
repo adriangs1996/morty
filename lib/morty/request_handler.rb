@@ -93,6 +93,8 @@ module Morty
         if [Integer, Float, String, T::Boolean, Symbol].include? type.raw_type
           if data.key?(name.to_s)
             result = Typed::Coercion.coerce(type: type, value: data[name.to_s])
+            raise BadRequestError.new(result.error.to_json) if result.failure?
+
             result.payload
           end
         else
@@ -101,6 +103,8 @@ module Morty
           serializer = Typed::HashSerializer.new(schema: target_type.schema)
           result = serializer.deserialize(data)
           result = serializer.deserialize(data[name.to_s]) if result.failure? && data.key?(name.to_s)
+          raise BadRequestError.new(result.error.to_json) if result.failure?
+
           result.payload
         end
       else
@@ -119,7 +123,14 @@ module Morty
             r
           end
         end
-        possible_types.select(&:success?).first&.payload
+        res = possible_types.select(&:success?).first&.payload
+        return res unless res.nil?
+
+        errs = {}
+        possible_types.select(&:failure?).each do |failure|
+          errs.merge!(failure.error)
+        end
+        raise BadRequestError.new(errs.to_json)
       end
     end
 
