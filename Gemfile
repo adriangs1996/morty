@@ -19,6 +19,8 @@ gem "falcon", "~> 0.48.3", group: :development
 
 gem "sorbet-schema", "~> 0.9.2"
 
-gem "rerun", "~> 0.14.0", :group => :development
+gem "rerun", "~> 0.14.0", group: :development
 
-gem "rack-test", "~> 2.1", :group => :test
+gem "rack-test", "~> 2.1", group: :test
+
+gem "byebug", "~> 11.1", groups: %i[development test]

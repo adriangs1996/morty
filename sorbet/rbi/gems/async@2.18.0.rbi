@@ -664,7 +664,7 @@ class Async::Queue
   # Signal the queue with a value, the same as {#enqueue}.
   #
   # source://async//lib/async/queue.rb#91
-  def signal(value); end
+  def signal(value = T.unsafe(nil)); end
 
   # source://async//lib/async/queue.rb#31
   def size; end
@@ -1269,6 +1269,6 @@ module Kernel
 
   # Run the given block of code synchronously, but within a reactor if not already in one.
   #
-  # source://async//lib/kernel/sync.rb#18
-  def Sync(&block); end
+  # source://async//lib/kernel/sync.rb#19
+  def Sync(annotation: T.unsafe(nil), &block); end
 end
