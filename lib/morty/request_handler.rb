@@ -91,7 +91,10 @@ module Morty
     def build_from(data, type, name)
       if type.is_a? T::Types::Simple
         if [Integer, Float, String, T::Boolean, Symbol].include? type.raw_type
-          data[name.to_s] if data.key?(name.to_s) && data[name.to_s].is_a?(type.raw_type)
+          if data.key?(name.to_s)
+            result = Typed::Coercion.coerce(type: type, value: data[name.to_s])
+            result.payload
+          end
         else
           target_type = T.let(type.raw_type, T.untyped)
           # Attempt to deserialize from body
@@ -102,16 +105,21 @@ module Morty
         end
       else
         # This is probably a nilable case
-        target_type = type.raw_a
-        if [Integer, Float, String, T::Boolean, Symbol].include? target_type
-          data[name.to_s] if data.key?(name.to_s) && data[name.to_s].is_a?(target_type)
-          nil
-        else
-          serializer = Typed::HashSerializer.new(schema: target_type.schema)
-          result = serializer.deserialize(data)
-          result = serializer.deserialize(data[name.to_s]) if result.failure? && data.key?(name.to_s)
-          result.payload
+        possible_types = type.types.map do |try_type|
+          use_type = T.let(try_type.raw_type, T.untyped)
+          if [Integer, Float, String, T::Boolean, Symbol, TrueClass, FalseClass].include? use_type
+            use_type = T::Boolean if [TrueClass, FalseClass].include? use_type
+            Typed::Coercion.coerce(type: use_type, value: data[name.to_s]) if data.key?(name.to_s)
+          else
+            # Attempt to deserialize from body
+            r = Typed::HashSerializer.new(schema: use_type.schema).deserialize(data)
+            if r.failure? && data.key?(name.to_s)
+              r = Typed::HashSerializer.new(schema: use_type.schema).deserialize(data[name.to_s])
+            end
+            r
+          end
         end
+        possible_types.select(&:success?).first&.payload
       end
     end
 
