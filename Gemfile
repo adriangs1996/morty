@@ -24,3 +24,7 @@ gem "rerun", "~> 0.14.0", group: :development
 gem "rack-test", "~> 2.1", group: :test
 
 gem "byebug", "~> 11.1", groups: %i[development test]
+
+gem "guard", "~> 2.19", :group => :development
+
+gem "guard-shell", "~> 0.7.2", :group => :development

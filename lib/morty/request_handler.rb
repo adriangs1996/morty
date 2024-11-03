@@ -35,13 +35,34 @@ module Morty
 
     private
 
+    def build_service(request)
+      if init_signature.nil? || init_signature.empty?
+        @service.new
+      else
+        params = {}
+        init_signature.each do |name, meta|
+          type = meta[:type]
+          concrete_implementation = Dependency.registry[type]
+          if concrete_implementation.nil?
+            params[name] = type.new(request)
+          else
+            impl = concrete_implementation.new(request)
+            impl.build
+            params[name] = impl
+          end
+        end
+        @service.new(**params)
+      end
+    end
+
     sig { params(request: Rack::Request).returns(Typed::Result[T.any(T::InexactStruct, T::Struct), T.untyped]) }
     def dispatch(request)
+      service = build_service(request)
       service_response = if uses_parameters?
                            pos_args, kwarg_args = data_from_request(request)
-                           @service.new.call(*pos_args, **kwarg_args)
+                           service.call(*pos_args, **kwarg_args)
                          else
-                           @service.new.call
+                           service.call
                          end
       T.let(service_response.serialize_to(:json), Typed::Result[T.any(T::InexactStruct, T::Struct), T.untyped])
     end
@@ -137,6 +158,10 @@ module Morty
     sig { returns(T::Boolean) }
     def uses_parameters?
       @uses_parameters ||= !signature.parameters.empty?
+    end
+
+    def init_signature
+      @init_signature ||= (@service.props if @service.respond_to?(:props))
     end
 
     def signature

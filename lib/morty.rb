@@ -19,12 +19,39 @@ require_relative "morty/response"
 module Morty
   class WrongMethodError < StandardError; end
 
+  # Represents a request with invalid parameters.
   class BadRequestError < StandardError
     attr_reader :message
 
     def initialize(message)
       super
       @message = message
+    end
+  end
+
+  class Dependency
+    def self.register(interface, concrete)
+      registry[interface] = concrete
+    end
+
+    def self.registry
+      @registry ||= {}
+    end
+  end
+
+  # This class defines a dependency for web base apps
+  class AppDependency
+    sig { params(interface: T.untyped).void }
+    def self.implements(interface:)
+      Dependency.register(interface, self)
+    end
+
+    sig { void }
+    def build; end
+
+    sig { params(request: T.nilable(Rack::Request)).void }
+    def initialize(request)
+      @request = request
     end
   end
 
