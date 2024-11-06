@@ -5,18 +5,21 @@ require "rack"
 require "rack/test"
 require_relative "../schemas/responses"
 
-class PostValidationService
+class PostValidationService < Morty::Service
+  I = type_member { { fixed: Payload } }
+  R = type_member { { fixed: InnerResponse } }
+
   class Payload < T::Struct
     const :message, String
     const :age, Integer
+    const :user_id, Integer
   end
 
-  extend Morty::Service
   act_as_writer_service!
 
-  sig { params(user_id: Integer, payload: Payload).returns(InnerResponse) }
-  def call(user_id, payload)
-    InnerResponse.new(message: "User #{user_id} writes #{payload.message} with age #{payload.age}")
+  sig { override.params(params: Payload).returns(InnerResponse) }
+  def call(params)
+    InnerResponse.new(message: "User #{params.user_id} writes #{params.message} with age #{params.age}")
   end
 end
 

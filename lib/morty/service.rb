@@ -17,24 +17,38 @@ module Morty
     end
   end
 
+  class Empty < T::Struct
+  end
+
   # Services are the abstractions over endpoints.
   # each service has a common interface, that is,
   # they are methods or procs that responds to call
   # with optionally requiring a typed params and a typed
   # data (for path and query string params or body params respectively)
-  module Service
-    def self.extended(service)
-      SERVICE_TRACKER << service unless SERVICE_TRACKER.include?(service)
-    end
+  class Service < T::InexactStruct
+    extend T::Generic
+    abstract!
 
-    sig { void }
-    def act_as_writer_service!
-      @act_as_writer_service = true
+    I = type_member { { upper: T::Struct } }
+    R = type_member { { upper: T::Struct } }
+
+    def self.inherited(service)
+      super
+      SERVICE_TRACKER << service unless SERVICE_TRACKER.include?(service)
+      service.extend(ClassMethods)
     end
 
     sig { returns(T::Boolean) }
-    def writer_service?
+    def self.writer_service?
       !@act_as_writer_service.nil? && @act_as_writer_service
     end
+
+    sig { void }
+    def self.act_as_writer_service!
+      @act_as_writer_service = true
+    end
+
+    sig { abstract.params(params: I).returns(R) }
+    def call(params); end
   end
 end

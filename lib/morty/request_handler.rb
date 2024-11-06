@@ -10,7 +10,7 @@ module Morty
   # The handler is in charge of initialize the data that the service
   # needs to run, or raise an error if it is not capable of doing so.
   class RequestHandler
-    sig { params(service: T.untyped).void }
+    sig { params(service: T.class_of(Morty::Service)).void }
     def initialize(service:)
       @service = service
     end

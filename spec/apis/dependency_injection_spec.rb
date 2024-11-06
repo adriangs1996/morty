@@ -14,14 +14,16 @@ class TestLogger
   end
 end
 
-class GetDependencies < T::Struct
-  extend Morty::Service
+class GetDependencies < Morty::Service
+  extend T::Generic
+  R = type_member { { fixed: Response } }
+  I = type_member { { fixed: GetDependenciesConcreteInput } }
 
   const :logger, TestLogger
 
-  sig { params(message: String, age: Integer).returns(Response) }
-  def call(message, age)
-    Response.new(inner: InnerResponse.new(message: logger.log_message("At age #{age} you receive #{message}")))
+  sig { override.params(params: GetDependenciesConcreteInput).returns(Response) }
+  def call(params)
+    Response.new(inner: InnerResponse.new(message: logger.log_message("At age #{params.age} you receive #{params.message}")))
   end
 end
 

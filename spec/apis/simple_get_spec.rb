@@ -5,11 +5,12 @@ require "rack"
 require "rack/test"
 require_relative "../schemas/responses"
 
-class GreeterService
-  extend Morty::Service
+class GreeterService < Morty::Service
+  I = type_member { { fixed: Morty::Empty } }
+  R = type_member { { fixed: Response } }
 
-  sig { returns(Response) }
-  def call
+  sig { override.params(_params: Morty::Empty).returns(Response) }
+  def call(_params)
     Response.new(inner: InnerResponse.new(message: "Hello World"))
   end
 end

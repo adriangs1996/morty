@@ -5,12 +5,13 @@ require "rack"
 require "rack/test"
 require_relative "../schemas/responses"
 
-class WriterService
-  extend Morty::Service
+class WriterService < Morty::Service
+  I = type_member { { fixed: Morty::Empty } }
+  R = type_member { { fixed: InnerResponse } }
   act_as_writer_service!
 
-  sig { returns(InnerResponse) }
-  def call
+  sig { override.params(_params: Morty::Empty).returns(InnerResponse) }
+  def call(_params)
     InnerResponse.new(message: "Hello World")
   end
 end

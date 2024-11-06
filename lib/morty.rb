@@ -15,6 +15,8 @@ require_relative "morty/version"
 require_relative "morty/service"
 require_relative "morty/request_handler"
 require_relative "morty/response"
+require_relative "morty/loader"
+require_relative "morty/dependency"
 
 module Morty
   class WrongMethodError < StandardError; end
@@ -26,40 +28,6 @@ module Morty
     def initialize(message)
       super
       @message = message
-    end
-  end
-
-  class Dependency
-    def self.register(interface, concrete)
-      registry[interface] = concrete
-    end
-
-    def self.registry
-      @registry ||= {}
-    end
-  end
-
-  # This class defines a dependency for web base apps
-  class AppDependency
-    sig { params(interface: T.untyped).void }
-    def self.implements(interface:)
-      Dependency.register(interface, self)
-    end
-
-    sig { void }
-    def build; end
-
-    sig { params(request: T.nilable(Rack::Request)).void }
-    def initialize(request)
-      @request = request
-    end
-  end
-
-  class Loader
-    def self.load_services(path = "api")
-      Dir["#{path}/**/*.rb"].sort.each do |f|
-        require_relative(f)
-      end
     end
   end
 

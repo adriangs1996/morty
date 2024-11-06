@@ -10,13 +10,15 @@ class Payload < T::Struct
   const :age, Integer
 end
 
-class WriterWithParamsService
-  extend Morty::Service
+class WriterWithParamsService < Morty::Service
   act_as_writer_service!
 
-  sig { params(payload: Payload).returns(InnerResponse) }
-  def call(payload)
-    InnerResponse.new(message: payload.message)
+  R = type_member { { fixed: InnerResponse } }
+  I = type_member { { fixed: Payload } }
+
+  sig { override.params(params: Payload).returns(InnerResponse) }
+  def call(params)
+    InnerResponse.new(message: params.message)
   end
 end
 

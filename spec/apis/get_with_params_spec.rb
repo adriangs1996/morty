@@ -5,21 +5,33 @@ require "rack"
 require "rack/test"
 require_relative "../schemas/responses"
 
-class GetWithParamsService
-  extend Morty::Service
+class GetWithParamsService < Morty::Service
+  I = type_member { { fixed: GetDependenciesConcreteInput } }
+  R = type_member { { fixed: Response } }
 
-  sig { params(message: String, age: Integer).returns(Response) }
-  def call(message, age)
-    Response.new(inner: InnerResponse.new(message: "At age #{age} you receive #{message}"))
+  sig { override.params(params: GetDependenciesConcreteInput).returns(Response) }
+  def call(params)
+    Response.new(inner: InnerResponse.new(message: "At age #{params.age} you receive #{params.message}"))
   end
 end
 
-class GetKwargs
-  extend Morty::Service
+class GetKwargsParams < T::Struct
+  const :message, String
+  const :age, Integer
+  const :salute, T::Boolean, default: false
+end
 
-  sig { params(message: String, age: Integer, salute: T::Boolean).returns(Response) }
-  def call(message, age:, salute: false)
-    Response.new(inner: InnerResponse.new(message: "At age #{age} you receive #{message} and salute: #{salute}"))
+class GetKwargs < Morty::Service
+  I = type_member { { fixed: GetKwargsParams } }
+  R = type_member { { fixed: Response } }
+
+  sig { override.params(params: GetKwargsParams).returns(Response) }
+  def call(params)
+    Response.new(
+      inner: InnerResponse.new(
+        message: "At age #{params.age} you receive #{params.message} and salute: #{params.salute}"
+      )
+    )
   end
 end
 
