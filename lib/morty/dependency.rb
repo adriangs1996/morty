@@ -14,13 +14,9 @@ module Morty
   end
 
   # This class defines a dependency for web base apps
-  class AppDependency
-    sig { void }
-    def build; end
-
-    sig { params(request: T.nilable(Rack::Request)).void }
-    def initialize(request)
-      @request = request
+  class AppDependency < T::InexactStruct
+    sig { overridable.params(request: T.nilable(Rack::Request)).void }
+    def build(request = nil)
     end
   end
 end

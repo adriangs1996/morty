@@ -35,21 +35,45 @@ module Morty
 
     private
 
+    def build_type(type, request)
+      concrete_implementation = Dependency.registry[type]
+      if concrete_implementation.nil?
+        impl = type.new
+        impl.build(request) if impl.respond_to?(:build)
+        impl
+      else
+        sign = signature_for_type(concrete_implementation)
+        if sign.nil? || sign.empty?
+          impl = concrete_implementation.new
+          impl.build(request) if impl.respond_to?(:build)
+          impl
+        else
+          params = {}
+          sign.each do |name, meta|
+            typ = meta[:type]
+            concrete = Dependency.registry[typ]
+            if concrete.nil?
+              params[name] = build_type(typ, request)
+            else
+              target = concrete.new
+              target.build(request) if target.respond_to?(:build)
+              params[name] = target
+            end
+          end
+          result = concrete_implementation.new(**params)
+          result.build(request) if result.respond_to?(:build)
+          result
+        end
+      end
+    end
+
     def build_service(request)
       if init_signature.nil? || init_signature.empty?
         @service.new
       else
         params = {}
         init_signature.each do |name, meta|
-          type = meta[:type]
-          concrete_implementation = Dependency.registry[type]
-          if concrete_implementation.nil?
-            params[name] = type.new(request)
-          else
-            impl = concrete_implementation.new(request)
-            impl.build
-            params[name] = impl
-          end
+          params[name] = build_type(meta[:type], request)
         end
         @service.new(**params)
       end
@@ -167,6 +191,10 @@ module Morty
     sig { returns(T::Boolean) }
     def uses_parameters?
       @uses_parameters ||= !signature.parameters.empty?
+    end
+
+    def signature_for_type(type)
+      type.props if type.respond_to?(:props)
     end
 
     def init_signature
