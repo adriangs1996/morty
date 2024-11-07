@@ -4,16 +4,11 @@
 module Morty
   module PathDslMixin
     extend T::Generic
-    has_attached_class!
-    abstract!
 
     sig { params(suffix: T.any(Symbol, String)).void }
     def path_suffix(suffix)
       @__suffix = suffix
     end
-
-    sig { abstract.returns(String) }
-    def name; end
 
     def __set_resulting_path(path)
       @__resulting_path = path

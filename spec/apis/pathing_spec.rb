@@ -15,7 +15,8 @@ class AppointmentsResponse < T::Struct
 end
 
 # Meta scope /doctors/<name>
-class Doctors < Morty::Scope
+module Doctors
+  extend Morty::PathDslMixin
   path_suffix :name
 
   class DoctorsParams < T::Struct

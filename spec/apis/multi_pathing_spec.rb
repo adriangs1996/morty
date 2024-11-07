@@ -5,7 +5,8 @@ require "rack"
 require "rack/test"
 
 # Meta scope /complex-doctors/<name>
-class ComplexDoctors < Morty::Scope
+module ComplexDoctors
+  extend Morty::PathDslMixin
   path_suffix :name
 
   class Appointment < T::Struct
