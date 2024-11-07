@@ -12,6 +12,7 @@ require "rack"
 require "sorbet-schema"
 require "json"
 require_relative "morty/version"
+require_relative "morty/scope"
 require_relative "morty/service"
 require_relative "morty/request_handler"
 require_relative "morty/response"
@@ -63,11 +64,23 @@ module Morty
     sig { params(request: Rack::Request).returns(T.nilable(RequestHandler)) }
     def find_handler(request)
       handler = @handlers[request.path]
+      handler = matched_handler(request.path) if handler.nil?
       return if handler.nil?
       raise WrongMethodError if handler.writer? && read_request?(request)
       raise WrongMethodError if !handler.writer? && write_request?(request)
 
       handler
+    end
+
+    def matched_handler(path)
+      match = @handlers.select do |handler_path, _|
+        Regexp.new(handler_path).match?(path)
+      end.first
+      if match.nil?
+        nil
+      else
+        match[1]
+      end
     end
 
     sig { params(request: Rack::Request).returns(T::Boolean) }
@@ -92,6 +105,7 @@ module Morty
       path_to_handler = {}
       Morty::SERVICE_TRACKER.each do |service_class|
         p1, p2 = pathify(service_class.name)
+        service_class.__set_resulting_path(p1)
         path_to_handler[p1] = RequestHandler.new(service: service_class)
         path_to_handler[p2] = RequestHandler.new(service: service_class)
       end
@@ -99,9 +113,13 @@ module Morty
     end
 
     def pathify(constant_name)
-      canonical_name = constant_name.gsub(/([aA][pP][iI])|([sS][eE][rR][vV][iI][cC][eE])/, "")
-      fragments = canonical_name.split("::").map do |fragment|
-        to_snake(fragment)
+      current_constant_name = ""
+      fragments = constant_name.split("::").map do |fragment|
+        current_constant_name += (current_constant_name.empty? ? fragment : "::#{fragment}")
+        klass = eval("::#{current_constant_name}")
+        frag_str = to_snake(fragment.gsub(/([aA][pP][iI])|([sS][eE][rR][vV][iI][cC][eE])/, ""))
+        frag_str += "/(?<#{klass.__suffix}>[a-zA-Z0-9_-]+/?)" unless klass.__suffix.nil?
+        frag_str
       end
       ["/" + fragments.join("/"), "/" + fragments.join("/") + "/"]
     end

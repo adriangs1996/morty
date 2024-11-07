@@ -69,13 +69,22 @@ module Morty
 
     def data_from_request(request)
       request_method = request.request_method&.downcase
+      args = parse_path_parameters_if_needed(request)
       if %w[get head delete].include?(request_method)
-        populate_data_from(parse_query_string(request.query_string))
+        populate_data_from(parse_query_string(request.query_string).merge(args))
       else
         body = request.body.read
         body = "{}" if body.empty?
-        populate_data_from(parse_query_string(request.query_string).merge(parse_body(body)))
+        populate_data_from(parse_query_string(request.query_string).merge(parse_body(body)).merge(args))
       end
+    end
+
+    def parse_path_parameters_if_needed(request)
+      original_path = @service.__resulting_path
+      return {} if original_path.nil? || [original_path, "#{original_path}/"].include?(request.path)
+
+      match = Regexp.new(original_path).match(request.path)
+      match&.named_captures || {}
     end
 
     def parse_body(body)

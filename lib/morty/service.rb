@@ -27,6 +27,7 @@ module Morty
   # data (for path and query string params or body params respectively)
   class Service < T::InexactStruct
     extend T::Generic
+    extend PathDslMixin
     abstract!
 
     I = type_member { { upper: T::Struct } }
