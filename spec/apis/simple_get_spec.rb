@@ -7,7 +7,6 @@ require_relative "../schemas/responses"
 
 class GreeterService < Morty::Service
   I = type_member { { fixed: Morty::Empty } }
-  R = type_member { { fixed: Response } }
 
   sig { override.params(_params: Morty::Empty).returns(Response) }
   def call(_params)

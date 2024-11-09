@@ -7,7 +7,6 @@ require_relative "../schemas/responses"
 
 class GetWithParamsService < Morty::Service
   I = type_member { { fixed: GetDependenciesConcreteInput } }
-  R = type_member { { fixed: Response } }
 
   sig { override.params(params: GetDependenciesConcreteInput).returns(Response) }
   def call(params)

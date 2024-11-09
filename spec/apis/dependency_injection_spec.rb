@@ -16,7 +16,6 @@ end
 
 class GetDependencies < Morty::Service
   extend T::Generic
-  R = type_member { { fixed: Response } }
   I = type_member { { fixed: GetDependenciesConcreteInput } }
 
   const :logger, TestLogger

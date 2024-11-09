@@ -25,7 +25,6 @@ Morty::Dependency.register(ILogger, TestLoggerConcrete)
 
 class GetDependenciesConcrete < Morty::Service
   extend T::Generic
-  R = type_member { { fixed: Response } }
   I = type_member { { fixed: GetDependenciesConcreteInput } }
 
   const :logger, ILogger

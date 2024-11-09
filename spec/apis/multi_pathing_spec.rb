@@ -26,9 +26,8 @@ module ComplexDoctors
 
   # /complex-doctors/<name>/get-appointments/<date>
   class GetAppointments < Morty::Service
-    I = type_member { { fixed: DoctorsParams } }
-    R = type_member { { fixed: AppointmentsResponse } }
     path_suffix :date
+    I = type_member { { fixed: DoctorsParams } }
 
     sig { override.params(params: DoctorsParams).returns(AppointmentsResponse) }
     def call(params)

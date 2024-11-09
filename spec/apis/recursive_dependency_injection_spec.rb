@@ -45,15 +45,13 @@ Morty::Dependency.register(IUnitOfWork, UnitOfWork)
 # /test-recursive-dependencies/<id>
 class TestRecursiveDependenciesService < Morty::Service
   path_suffix :id
+  const :unit_of_work, IUnitOfWork
 
   class Params < T::Struct
     const :id, Integer
   end
 
   I = type_member { { fixed: Params } }
-  R = type_member { { fixed: T.any(User, Morty::Empty) } }
-
-  const :unit_of_work, IUnitOfWork
 
   sig { override.params(params: Params).returns(T.any(User, Morty::Empty)) }
   def call(params)

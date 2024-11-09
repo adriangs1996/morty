@@ -14,25 +14,25 @@ class AppointmentsResponse < T::Struct
   const :appointments, T::Array[Appointment]
 end
 
+class DoctorsParams < T::Struct
+  const :name, String
+end
+
 # Meta scope /doctors/<name>
 module Doctors
   extend Morty::PathDslMixin
   path_suffix :name
 
-  class DoctorsParams < T::Struct
-    const :name, String
-  end
-
   # /doctors/<name>/get-appointments
   class GetAppointments < Morty::Service
+    include Morty::Json
     I = type_member { { fixed: DoctorsParams } }
-    R = type_member { { fixed: AppointmentsResponse } }
 
     sig { override.params(params: DoctorsParams).returns(AppointmentsResponse) }
     def call(params)
-      AppointmentsResponse.new(
+      json_bad AppointmentsResponse.new(
         doctor: params.name,
-        appointments: [Appointment.new(date: Date.today, capacity: 2)]
+        appointments: [Appointment.new(date: Date.today, capacity: 10)]
       )
     end
   end
@@ -50,7 +50,7 @@ RSpec.describe("Endpoint with added prefix to path") do
 
   it "should allow path-prefix paths" do
     get "/doctors/jekyll/get-appointments"
-    expect(last_response.status).to eq(200)
+    expect(last_response.status).to eq(400)
   end
 
   it "should return json response with jekyll as name" do

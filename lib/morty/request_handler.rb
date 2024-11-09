@@ -24,12 +24,9 @@ module Morty
     def call(request)
       response = Rack::Response.new
       response.add_header("Content-type", "application/json")
-      result = dispatch(request)
-      if result.failure?
-        response.status = 422
-        response.write(JSON.dump({ errors: result.error }))
-      end
-      response.write(result.payload)
+      status_code, body = dispatch(request)
+      response.status = status_code
+      response.write(body)
       response
     end
 
@@ -79,7 +76,6 @@ module Morty
       end
     end
 
-    sig { params(request: Rack::Request).returns(Typed::Result[T.any(T::InexactStruct, T::Struct), T.untyped]) }
     def dispatch(request)
       service = build_service(request)
       service_response = if uses_parameters?
@@ -88,7 +84,16 @@ module Morty
                          else
                            service.call
                          end
-      T.let(service_response.serialize_to(:json), Typed::Result[T.any(T::InexactStruct, T::Struct), T.untyped])
+      if service_response.is_a?(T::Struct) || service_response.is_a?(T::InexactStruct)
+        result = service_response.serialize_to(service.__serializer)
+        if result.success?
+          [service.__status_code, result.payload]
+        else
+          [422, JSON.dump({ errors: result.error })]
+        end
+      else
+        [service.__status_code, service_response]
+      end
     end
 
     def data_from_request(request)

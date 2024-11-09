@@ -11,15 +11,14 @@ class AgeAndMessageStruct < T::Struct
 end
 
 class PostMergedParams < Morty::Service
+  act_as_writer_service!
+
   class Payload < T::Struct
     const :payload, AgeAndMessageStruct
     const :user_id, Integer
   end
 
   I = type_member { { fixed: Payload } }
-  R = type_member { { fixed: InnerResponse } }
-
-  act_as_writer_service!
 
   sig { override.params(params: Payload).returns(InnerResponse) }
   def call(params)

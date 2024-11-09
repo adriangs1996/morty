@@ -6,16 +6,14 @@ require "rack/test"
 require_relative "../schemas/responses"
 
 class PostValidationService < Morty::Service
+  act_as_writer_service!
   I = type_member { { fixed: Payload } }
-  R = type_member { { fixed: InnerResponse } }
 
   class Payload < T::Struct
     const :message, String
     const :age, Integer
     const :user_id, Integer
   end
-
-  act_as_writer_service!
 
   sig { override.params(params: Payload).returns(InnerResponse) }
   def call(params)

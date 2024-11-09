@@ -6,9 +6,8 @@ require "rack/test"
 require_relative "../schemas/responses"
 
 class WriterService < Morty::Service
-  I = type_member { { fixed: Morty::Empty } }
-  R = type_member { { fixed: InnerResponse } }
   act_as_writer_service!
+  I = type_member { { fixed: Morty::Empty } }
 
   sig { override.params(_params: Morty::Empty).returns(InnerResponse) }
   def call(_params)

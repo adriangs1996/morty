@@ -12,8 +12,6 @@ end
 
 class WriterWithParamsService < Morty::Service
   act_as_writer_service!
-
-  R = type_member { { fixed: InnerResponse } }
   I = type_member { { fixed: Payload } }
 
   sig { override.params(params: Payload).returns(InnerResponse) }
