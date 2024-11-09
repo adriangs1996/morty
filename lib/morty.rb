@@ -118,7 +118,9 @@ module Morty
         current_constant_name += (current_constant_name.empty? ? fragment : "::#{fragment}")
         klass = eval("::#{current_constant_name}")
         frag_str = to_snake(fragment.gsub(/([aA][pP][iI])|([sS][eE][rR][vV][iI][cC][eE])/, ""))
-        frag_str += "/(?<#{klass.__suffix}>[a-zA-Z0-9_-]+/?)" unless klass.__suffix.nil?
+        unless !klass.respond_to?(:__suffix) || klass.__suffix.nil?
+          frag_str += "/(?<#{klass.__suffix}>[a-zA-Z0-9_-]+/?)"
+        end
         frag_str
       end
       ["/" + fragments.join("/"), "/" + fragments.join("/") + "/"]
