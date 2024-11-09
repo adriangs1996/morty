@@ -12,7 +12,7 @@ module ILogger
   def log_message(message); end
 end
 
-class TestLoggerConcrete < Morty::AppDependency
+class TestLoggerConcrete
   include ILogger
 
   sig { override.params(message: String).returns(String) }
@@ -25,10 +25,9 @@ Morty::Dependency.register(ILogger, TestLoggerConcrete)
 
 class GetDependenciesConcrete < Morty::Service
   extend T::Generic
-  I = type_member { { fixed: GetDependenciesConcreteInput } }
-
   const :logger, ILogger
 
+  I = type_member { { fixed: GetDependenciesConcreteInput } }
   sig { override.params(params: GetDependenciesConcreteInput).returns(Response) }
   def call(params)
     Response.new(inner: InnerResponse.new(message: logger.log_message("At age #{params.age} you receive #{params.message}")))

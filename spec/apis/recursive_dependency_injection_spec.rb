@@ -25,12 +25,12 @@ module IUnitOfWork
   def users; end
 end
 
-class UnitOfWork < Morty::AppDependency
+class UnitOfWork < T::Struct
   include IUnitOfWork
   const :users, IRepository
 end
 
-class Repository < Morty::AppDependency
+class Repository
   include IRepository
 
   sig { override.params(id: Integer).returns(T.nilable(User)) }
