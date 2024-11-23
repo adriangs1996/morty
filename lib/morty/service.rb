@@ -22,7 +22,7 @@ module Morty
   # they are methods or procs that responds to call
   # with optionally requiring a typed params and a typed
   # data (for path and query string params or body params respectively)
-  class Service < T::InexactStruct
+  module Service
     include HttpMetadata
     extend T::Generic
     extend PathDslMixin
@@ -30,21 +30,25 @@ module Morty
 
     I = type_member { { upper: T.any(T::Struct, T::InexactStruct) } }
 
-    def self.inherited(service)
+    def self.included(service)
       super
       SERVICE_TRACKER << service unless SERVICE_TRACKER.include?(service)
-      service.extend(ClassMethods)
     end
 
-    sig { returns(T::Boolean) }
-    def self.writer_service?
-      !@act_as_writer_service.nil? && @act_as_writer_service
+    module ClassMethods
+      sig { returns(T::Boolean) }
+      def writer_service?
+        !@act_as_writer_service.nil? && @act_as_writer_service
+      end
+
+      sig { void }
+      def act_as_writer_service!
+        @act_as_writer_service = true
+      end
     end
 
-    sig { void }
-    def self.act_as_writer_service!
-      @act_as_writer_service = true
-    end
+    mixes_in_class_methods(ClassMethods)
+    mixes_in_class_methods(T::Generic)
 
     sig do
       abstract.params(params: I).returns(ModelType)

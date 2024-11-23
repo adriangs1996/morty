@@ -22,7 +22,8 @@ module Users
     def authenticated_user; end
   end
 
-  class PersonalInformation < Morty::Service
+  class PersonalInformation < T::Struct
+    include Morty::Service
     include Morty::Json
 
     I = type_member { { fixed: Morty::Empty } }
