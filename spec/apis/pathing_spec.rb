@@ -24,7 +24,8 @@ module Doctors
   path_suffix :name
 
   # /doctors/<name>/get-appointments
-  class GetAppointments < Morty::Service
+  class GetAppointments
+    include Morty::Service
     include Morty::Json
     I = type_member { { fixed: DoctorsParams } }
 

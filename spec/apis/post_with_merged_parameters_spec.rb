@@ -10,7 +10,8 @@ class AgeAndMessageStruct < T::Struct
   const :message, String
 end
 
-class PostMergedParams < Morty::Service
+class PostMergedParams
+  include Morty::Service
   act_as_writer_service!
 
   class Payload < T::Struct

@@ -14,7 +14,8 @@ class TestLogger
   end
 end
 
-class GetDependencies < Morty::Service
+class GetDependencies < T::Struct
+  include Morty::Service
   extend T::Generic
   I = type_member { { fixed: GetDependenciesConcreteInput } }
 

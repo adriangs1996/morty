@@ -5,7 +5,8 @@ require "rack"
 require "rack/test"
 require_relative "../schemas/responses"
 
-class WriterService < Morty::Service
+class WriterService
+  include Morty::Service
   act_as_writer_service!
   I = type_member { { fixed: Morty::Empty } }
 

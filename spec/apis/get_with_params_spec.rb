@@ -5,7 +5,8 @@ require "rack"
 require "rack/test"
 require_relative "../schemas/responses"
 
-class GetWithParamsService < Morty::Service
+class GetWithParamsService
+  include Morty::Service
   I = type_member { { fixed: GetDependenciesConcreteInput } }
 
   sig { override.params(params: GetDependenciesConcreteInput).returns(Response) }
@@ -20,9 +21,9 @@ class GetKwargsParams < T::Struct
   const :salute, T::Boolean, default: false
 end
 
-class GetKwargs < Morty::Service
+class GetKwargs
+  include Morty::Service
   I = type_member { { fixed: GetKwargsParams } }
-  R = type_member { { fixed: Response } }
 
   sig { override.params(params: GetKwargsParams).returns(Response) }
   def call(params)

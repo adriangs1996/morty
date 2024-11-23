@@ -25,7 +25,9 @@ module ComplexDoctors
   end
 
   # /complex-doctors/<name>/get-appointments/<date>
-  class GetAppointments < Morty::Service
+  class GetAppointments
+    include Morty::Service
+
     path_suffix :date
     I = type_member { { fixed: DoctorsParams } }
 

@@ -5,7 +5,8 @@ require "rack"
 require "rack/test"
 require_relative "../schemas/responses"
 
-class GreeterService < Morty::Service
+class GreeterService
+  include Morty::Service
   I = type_member { { fixed: Morty::Empty } }
 
   sig { override.params(_params: Morty::Empty).returns(Response) }

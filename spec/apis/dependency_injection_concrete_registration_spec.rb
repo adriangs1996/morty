@@ -23,7 +23,8 @@ end
 
 Morty::Dependency.register(ILogger, TestLoggerConcrete)
 
-class GetDependenciesConcrete < Morty::Service
+class GetDependenciesConcrete < T::Struct
+  include Morty::Service
   extend T::Generic
   const :logger, ILogger
 

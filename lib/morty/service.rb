@@ -25,7 +25,6 @@ module Morty
   module Service
     include HttpMetadata
     extend T::Generic
-    extend PathDslMixin
     abstract!
 
     I = type_member { { upper: T.any(T::Struct, T::InexactStruct) } }
@@ -49,6 +48,7 @@ module Morty
 
     mixes_in_class_methods(ClassMethods)
     mixes_in_class_methods(T::Generic)
+    mixes_in_class_methods(PathDslMixin)
 
     sig do
       abstract.params(params: I).returns(ModelType)

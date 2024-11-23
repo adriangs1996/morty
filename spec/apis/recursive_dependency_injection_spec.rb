@@ -43,7 +43,8 @@ Morty::Dependency.register(IRepository, Repository)
 Morty::Dependency.register(IUnitOfWork, UnitOfWork)
 
 # /test-recursive-dependencies/<id>
-class TestRecursiveDependenciesService < Morty::Service
+class TestRecursiveDependenciesService < T::Struct
+  include Morty::Service
   path_suffix :id
   const :unit_of_work, IUnitOfWork
 

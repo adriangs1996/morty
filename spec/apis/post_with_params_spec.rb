@@ -10,7 +10,8 @@ class Payload < T::Struct
   const :age, Integer
 end
 
-class WriterWithParamsService < Morty::Service
+class WriterWithParamsService
+  include Morty::Service
   act_as_writer_service!
   I = type_member { { fixed: Payload } }
 
