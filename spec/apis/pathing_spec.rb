@@ -27,7 +27,7 @@ module Doctors
   class GetAppointments
     include Morty::Service
     include Morty::Json
-    I = type_member { { fixed: DoctorsParams } }
+    
 
     sig { override.params(params: DoctorsParams).returns(AppointmentsResponse) }
     def call(params)

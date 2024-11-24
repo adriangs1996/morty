@@ -42,7 +42,7 @@ end
 Morty::Dependency.register(IRepository, Repository)
 Morty::Dependency.register(IUnitOfWork, UnitOfWork)
 
-# /test-recursive-dependencies/<id>
+# GET /test-recursive-dependencies/<id>
 class TestRecursiveDependenciesService < T::Struct
   include Morty::Service
   path_suffix :id
@@ -51,8 +51,6 @@ class TestRecursiveDependenciesService < T::Struct
   class Params < T::Struct
     const :id, Integer
   end
-
-  I = type_member { { fixed: Params } }
 
   sig { override.params(params: Params).returns(T.any(User, Morty::Empty)) }
   def call(params)

@@ -26,7 +26,7 @@ module Users
     include Morty::Service
     include Morty::Json
 
-    I = type_member { { fixed: Morty::Empty } }
+    
 
     const :auth_service, IAuthService
 

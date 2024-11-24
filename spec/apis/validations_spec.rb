@@ -8,7 +8,7 @@ require_relative "../schemas/responses"
 class PostValidationService
   include Morty::Service
   act_as_writer_service!
-  I = type_member { { fixed: Payload } }
+  
 
   class Payload < T::Struct
     const :message, String

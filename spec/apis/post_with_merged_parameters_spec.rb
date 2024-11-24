@@ -19,7 +19,7 @@ class PostMergedParams
     const :user_id, Integer
   end
 
-  I = type_member { { fixed: Payload } }
+  
 
   sig { override.params(params: Payload).returns(InnerResponse) }
   def call(params)

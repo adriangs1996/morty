@@ -13,7 +13,7 @@ end
 class WriterWithParamsService
   include Morty::Service
   act_as_writer_service!
-  I = type_member { { fixed: Payload } }
+  
 
   sig { override.params(params: Payload).returns(InnerResponse) }
   def call(params)

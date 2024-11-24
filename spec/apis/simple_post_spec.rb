@@ -8,7 +8,7 @@ require_relative "../schemas/responses"
 class WriterService
   include Morty::Service
   act_as_writer_service!
-  I = type_member { { fixed: Morty::Empty } }
+  
 
   sig { override.params(_params: Morty::Empty).returns(InnerResponse) }
   def call(_params)

@@ -7,7 +7,7 @@ require_relative "../schemas/responses"
 
 class GetWithParamsService
   include Morty::Service
-  I = type_member { { fixed: GetDependenciesConcreteInput } }
+  
 
   sig { override.params(params: GetDependenciesConcreteInput).returns(Response) }
   def call(params)
@@ -23,7 +23,7 @@ end
 
 class GetKwargs
   include Morty::Service
-  I = type_member { { fixed: GetKwargsParams } }
+  
 
   sig { override.params(params: GetKwargsParams).returns(Response) }
   def call(params)

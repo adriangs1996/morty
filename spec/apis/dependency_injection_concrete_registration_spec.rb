@@ -28,7 +28,7 @@ class GetDependenciesConcrete < T::Struct
   extend T::Generic
   const :logger, ILogger
 
-  I = type_member { { fixed: GetDependenciesConcreteInput } }
+  
   sig { override.params(params: GetDependenciesConcreteInput).returns(Response) }
   def call(params)
     Response.new(inner: InnerResponse.new(message: logger.log_message("At age #{params.age} you receive #{params.message}")))

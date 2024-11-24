@@ -27,13 +27,12 @@ module Morty
     extend T::Generic
     abstract!
 
-    I = type_member { { upper: T.any(T::Struct, T::InexactStruct) } }
-
     def self.included(service)
       super
       SERVICE_TRACKER << service unless SERVICE_TRACKER.include?(service)
     end
 
+    # Utility functions added to each service
     module ClassMethods
       sig { returns(T::Boolean) }
       def writer_service?
@@ -47,12 +46,9 @@ module Morty
     end
 
     mixes_in_class_methods(ClassMethods)
-    mixes_in_class_methods(T::Generic)
     mixes_in_class_methods(PathDslMixin)
 
-    sig do
-      abstract.params(params: I).returns(ModelType)
-    end
+    sig { abstract.params(params: T.untyped).returns(ModelType) }
     def call(params); end
   end
 end
