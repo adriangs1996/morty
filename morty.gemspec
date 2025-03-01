@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Adrian Gonzalez"]
   spec.email = ["adriangonzalezsanchez1996@gmail.com"]
 
-  spec.summary = "Yet another attempt to write a ruby web framework."
-  spec.description = "A framework designed to build APIs. Is lighter than something like Rails, much like something like Sinatra. Built with full support for sorbet in mind."
+  spec.summary = "A really simple DSL for writing API endpoints with openapi support"
+  spec.description = "A simple DSL to describe metadata for endpoints and automatic params construction based on dry-struct schemas. Support for openapi"
   spec.homepage = "https://github.com/adriangs1996/morty"
   spec.license = "MIT"
   spec.required_ruby_version = ">= 3.0.0"
@@ -33,8 +33,11 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "sorbet-schema", "~> 0.9.2"
-  spec.add_dependency "tapioca", "~> 0.16.3"
+  spec.add_dependency "dry-monads", "~> 1.7"
+  spec.add_dependency "dry-struct", "~> 1.7"
+  spec.add_dependency "dry-swagger", "~> 2.0"
+  spec.add_dependency "dry-system", "~> 1.2"
+  spec.add_dependency "dry-validation", "~> 1.11"
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
