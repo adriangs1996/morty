@@ -25,7 +25,7 @@ module Morty
       # @param constant [Class] The constant to resolve
       # @param resolution_stack [Array] Stack of constants being resolved to detect cycles
       # @return [Object] The resolved implementation
-      def resolve_constant(constant, resolution_stack = []) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength
+      def resolve_constant(constant, resolution_stack = []) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/MethodLength,Metrics/PerceivedComplexity
         key = constant_to_key(constant)
 
         # Check for circular dependencies
