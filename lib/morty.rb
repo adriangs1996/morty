@@ -2,6 +2,7 @@
 # typed: true
 
 require "dry/struct"
+require "morty/endpoint"
 require "morty/dry_swagger"
 require "morty/endpoint_registry"
 require "morty/utils/string_transformations"

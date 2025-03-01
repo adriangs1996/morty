@@ -3,146 +3,244 @@
 require "spec_helper"
 
 RSpec.describe Morty::ApiMetadata do # rubocop:disable Metrics/BlockLength
-  # Using real Dry::Struct classes defined in support/test_classes.rb
   let(:input_class) { TestInput }
   let(:output_class) { TestOutput }
 
   describe "DSL methods" do # rubocop:disable Metrics/BlockLength
-    let(:endpoint_class) do
-      Class.new do
-        include Morty::ApiMetadata
-      end
-    end
-
     before do
-      stub_const("API::V1::TestEndpoint", endpoint_class)
+      Morty::EndpointRegistry.registry.clear
     end
 
     describe ".get" do
       it "configures a GET endpoint" do
-        endpoint_class.get(input: TestInput, output: TestOutput)
+        # Call the class registration
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
 
-        expect(endpoint_class.http_method).to eq(:get)
-        expect(endpoint_class.input_class).to eq(TestInput)
-        expect(endpoint_class.output_class).to eq(TestOutput)
-        expect(endpoint_class.path).to eq("/api/v1/test")
+          get input: TestInput, output: TestOutput
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.http_method).to eq(:get)
+        expect(endpoint.input_class).to eq(TestInput)
+        expect(endpoint.output_class).to eq(TestOutput)
+        expect(endpoint.path).to eq("/test")
       end
 
       it "allows custom path" do
-        endpoint_class.get(input: TestInput, output: TestOutput, path: "/custom/path")
-        expect(endpoint_class.path).to eq("/custom/path")
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
+
+          get input: TestInput, output: TestOutput, path: "/custom/path"
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.path).to eq("/custom/path")
       end
     end
 
     describe ".post" do
       it "configures a POST endpoint" do
-        endpoint_class.post(input: TestInput, output: TestOutput)
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
 
-        expect(endpoint_class.http_method).to eq(:post)
-        expect(endpoint_class.input_class).to eq(TestInput)
-        expect(endpoint_class.output_class).to eq(TestOutput)
-        expect(endpoint_class.path).to eq("/api/v1/test")
+          post input: TestInput, output: TestOutput
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.http_method).to eq(:post)
+        expect(endpoint.input_class).to eq(TestInput)
+        expect(endpoint.output_class).to eq(TestOutput)
+        expect(endpoint.path).to eq("/test")
+      end
+
+      it "allows custom path" do
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
+
+          post input: TestInput, output: TestOutput, path: "/custom/path"
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.path).to eq("/custom/path")
       end
     end
 
     describe ".put" do
       it "configures a PUT endpoint" do
-        endpoint_class.put(input: TestInput, output: TestOutput)
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
 
-        expect(endpoint_class.http_method).to eq(:put)
-        expect(endpoint_class.input_class).to eq(TestInput)
-        expect(endpoint_class.output_class).to eq(TestOutput)
-        expect(endpoint_class.path).to eq("/api/v1/test")
+          put input: TestInput, output: TestOutput
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.http_method).to eq(:put)
+        expect(endpoint.input_class).to eq(TestInput)
+        expect(endpoint.output_class).to eq(TestOutput)
+        expect(endpoint.path).to eq("/test")
+      end
+
+      it "allows custom path" do
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
+
+          put input: TestInput, output: TestOutput, path: "/custom/path"
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.path).to eq("/custom/path")
       end
     end
 
     describe ".delete" do
       it "configures a DELETE endpoint" do
-        endpoint_class.delete(input: TestInput, output: TestOutput)
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
 
-        expect(endpoint_class.http_method).to eq(:delete)
-        expect(endpoint_class.input_class).to eq(TestInput)
-        expect(endpoint_class.output_class).to eq(TestOutput)
-        expect(endpoint_class.path).to eq("/api/v1/test")
+          delete input: TestInput, output: TestOutput
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.http_method).to eq(:delete)
+        expect(endpoint.input_class).to eq(TestInput)
+        expect(endpoint.output_class).to eq(TestOutput)
+        expect(endpoint.path).to eq("/test")
+      end
+
+      it "allows custom path" do
+        class TestEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+          include Morty::ApiMetadata
+
+          delete input: TestInput, output: TestOutput, path: "/custom/path"
+          def call(input); end
+        end
+        expect(Morty::EndpointRegistry.registry.count).to eq(1)
+        endpoint = Morty::EndpointRegistry.registry.first
+        expect(endpoint.path).to eq("/custom/path")
       end
     end
   end
 
-  describe "path inference" do
-    let(:endpoint_class) do
-      Class.new do
-        include Morty::ApiMetadata
-      end
+  describe "path inference" do # rubocop:disable Metrics/BlockLength
+    before do
+      Morty::EndpointRegistry.registry.clear
     end
 
     it "infers path from namespaced class name" do
-      stub_const("API::V1::Users::ProfileEndpoint", endpoint_class)
-      expect(endpoint_class.infer_path_from_class).to eq("/api/v1/users/profile")
+      module API # rubocop:disable Lint/ConstantDefinitionInBlock
+        module V1
+          module Users
+            class ProfileEndpoint
+              include Morty::ApiMetadata
+              get input: TestInput, output: TestOutput
+              def call(params); end
+            end
+          end
+        end
+      end
+      expect(Morty::EndpointRegistry.registry.count).to eq(1)
+      endpoint = Morty::EndpointRegistry.registry.first
+      expect(endpoint.infer_path_from_class).to eq("/api/v1/users/profile")
     end
 
     it "removes _endpoint suffix" do
-      stub_const("UsersEndpoint", endpoint_class)
-      expect(endpoint_class.infer_path_from_class).to eq("/users")
+      class UsersEndpoint # rubocop:disable Lint/ConstantDefinitionInBlock
+        include Morty::ApiMetadata
+        get input: TestInput, output: TestOutput
+        def call(params); end
+      end
+      expect(Morty::EndpointRegistry.registry.count).to eq(1)
+      endpoint = Morty::EndpointRegistry.registry.first
+      expect(endpoint.infer_path_from_class).to eq("/users")
     end
 
     it "removes _controller suffix" do
-      stub_const("UsersController", endpoint_class)
-      expect(endpoint_class.infer_path_from_class).to eq("/users")
+      class UsersController # rubocop:disable Lint/ConstantDefinitionInBlock
+        include Morty::ApiMetadata
+        get input: TestInput, output: TestOutput
+        def call(params); end
+      end
+      expect(Morty::EndpointRegistry.registry.count).to eq(1)
+      endpoint = Morty::EndpointRegistry.registry.first
+      expect(endpoint.infer_path_from_class).to eq("/users")
     end
   end
 
   describe ".routeable?" do
-    let(:endpoint_class) do
-      Class.new do
-        include Morty::ApiMetadata
-      end
-    end
-
     before do
-      stub_const("TestEndpoint", endpoint_class)
+      Morty::EndpointRegistry.registry.clear
     end
 
     it "returns true when all required attributes are set" do
-      endpoint_class.get(input: TestInput, output: TestOutput)
-      expect(endpoint_class.routeable?).to be true
+      class TestController # rubocop:disable Lint/ConstantDefinitionInBlock
+        include Morty::ApiMetadata
+        get input: TestInput, output: TestOutput
+        def call; end
+      end
+
+      endpoint = Morty::EndpointRegistry.registry.last
+      expect(endpoint.routeable?).to be true
     end
 
     it "returns false when attributes are missing" do
-      expect(endpoint_class.routeable?).to be false
+      class TestController # rubocop:disable Lint/ConstantDefinitionInBlock
+        include Morty::ApiMetadata
+      end
+
+      expect(Morty::EndpointRegistry.registry).to be_empty
     end
   end
 
   describe ".api_name" do
-    let(:endpoint_class) do
-      Class.new do
-        include Morty::ApiMetadata
-      end
+    before do
+      Morty::EndpointRegistry.registry.clear
     end
 
     it "returns formatted api name" do
-      stub_const("API::V1::Users::ProfileEndpoint", endpoint_class)
-      expect(endpoint_class.api_name).to eq("api/v1/users/profile")
+      module API # rubocop:disable Lint/ConstantDefinitionInBlock
+        module V1
+          module Users
+            class ProfileEndpoint
+              include Morty::ApiMetadata
+              get input: TestInput, output: TestOutput
+              def call(params); end
+            end
+          end
+        end
+      end
+
+      endpoint = Morty::EndpointRegistry.registry.last
+      expect(endpoint.api_name).to eq("api/v1/users/profile")
     end
   end
 
   describe ".generate_openapi_schema" do # rubocop:disable Metrics/BlockLength
-    let(:endpoint_class) do
-      Class.new do
-        include Morty::ApiMetadata
-      end
-    end
-
     before do
-      stub_const("API::V1::TestEndpoint", endpoint_class)
+      Morty::EndpointRegistry.registry.clear
     end
 
     context "with GET endpoint" do
-      before do
-        endpoint_class.get(input: UserProfileInput, output: UserProfileOutput)
-      end
-
       it "generates OpenAPI schema with parameters" do
-        schema = endpoint_class.generate_openapi_schema
+        module API # rubocop:disable Lint/ConstantDefinitionInBlock
+          module V1
+            class TestController
+              include Morty::ApiMetadata
+              get input: UserProfileInput, output: UserProfileOutput
+              def call(params); end
+            end
+          end
+        end
+
+        endpoint = Morty::EndpointRegistry.registry.last
+        schema = endpoint.generate_openapi_schema
 
         expect(schema["/api/v1/test"]).to be_present
         expect(schema["/api/v1/test"]["get"]).to be_present
@@ -161,12 +259,19 @@ RSpec.describe Morty::ApiMetadata do # rubocop:disable Metrics/BlockLength
     end
 
     context "with POST endpoint" do
-      before do
-        endpoint_class.post(input: TestInput, output: TestOutput)
-      end
-
       it "generates OpenAPI schema with request body" do
-        schema = endpoint_class.generate_openapi_schema
+        module API # rubocop:disable Lint/ConstantDefinitionInBlock
+          module V1
+            class TestController
+              include Morty::ApiMetadata
+              post input: TestInput, output: TestOutput
+              def call(params); end
+            end
+          end
+        end
+
+        endpoint = Morty::EndpointRegistry.registry.last
+        schema = endpoint.generate_openapi_schema
 
         request_body = schema["/api/v1/test"]["post"][:requestBody]
         expect(request_body).to be_present
@@ -179,26 +284,40 @@ RSpec.describe Morty::ApiMetadata do # rubocop:disable Metrics/BlockLength
     end
   end
 
-  describe "operation ID generation" do
-    let(:endpoint_class) do
-      Class.new do
-        include Morty::ApiMetadata
-      end
-    end
-
+  describe "operation ID generation" do # rubocop:disable Metrics/BlockLength
     before do
-      stub_const("API::V1::UsersEndpoint", endpoint_class)
+      Morty::EndpointRegistry.registry.clear
     end
 
     it "generates correct operation ID for GET" do
-      endpoint_class.get(input: TestInput, output: TestOutput)
-      schema = endpoint_class.generate_openapi_schema
+      module API # rubocop:disable Lint/ConstantDefinitionInBlock
+        module V1
+          class UsersController
+            include Morty::ApiMetadata
+            get input: TestInput, output: TestOutput
+            def call(params); end
+          end
+        end
+      end
+
+      endpoint = Morty::EndpointRegistry.registry.last
+      schema = endpoint.generate_openapi_schema
       expect(schema["/api/v1/users"]["get"][:operation_id]).to eq("get_users")
     end
 
     it "generates correct operation ID for POST" do
-      endpoint_class.post(input: TestInput, output: TestOutput)
-      schema = endpoint_class.generate_openapi_schema
+      module API # rubocop:disable Lint/ConstantDefinitionInBlock
+        module V1
+          class UsersController
+            include Morty::ApiMetadata
+            post input: TestInput, output: TestOutput
+            def call(params); end
+          end
+        end
+      end
+
+      endpoint = Morty::EndpointRegistry.registry.last
+      schema = endpoint.generate_openapi_schema
       expect(schema["/api/v1/users"]["post"][:operation_id]).to eq("create_users")
     end
   end

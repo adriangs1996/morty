@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 require_relative "endpoint_registry"
+require_relative "utils/string_transformations"
 
 module Morty
   # Generate an openapi doc based on the registered endpoints
   class OpenapiGenerator
-    def initialize(prefix = "", title = "Rick on Rails API", version = "v1", description = "", registry = []) # rubocop:disable Metrics/ParameterLists
+    include Utils::StringTransformations
+
+    def initialize(prefix: "", title: "Rick on Rails API", version: "v1", description: "", registry: [])
       @prefix = prefix
       @title = title
       @version = version
@@ -31,7 +34,7 @@ module Morty
         schema = endpoint.generate_openapi_schema || {}
         schema = schema.transform_keys { |k| @prefix + k }
         paths.merge!(schema)
-      end
+      end || {}
     end
 
     def generate_schemas # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
@@ -55,12 +58,15 @@ module Morty
       }
 
       @endpoints_registry.each do |endpoint|
-        if endpoint.input_class
-          schemas[endpoint.input_class.name.demodulize] =
+        next unless endpoint.routeable?
+
+        if endpoint.input_class && !schemas.key?(demodulize(endpoint.input_class.name))
+          schemas[demodulize(endpoint.input_class.name)] =
             Dry::Swagger::DocumentationGenerator.new.from_struct(endpoint.input_class)
         end
-        if endpoint.output_class
-          schemas[endpoint.output_class.name.demodulize] =
+
+        if endpoint.output_class && !schemas.key?(demodulize(endpoint.output_class.name))
+          schemas[demodulize(endpoint.output_class.name)] =
             Dry::Swagger::DocumentationGenerator.new.from_struct(endpoint.output_class)
         end
       end

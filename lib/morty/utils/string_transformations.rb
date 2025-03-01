@@ -17,6 +17,12 @@ module Morty
         word.downcase!
         word
       end
+
+      def demodulize(path)
+        return path unless path.is_a?(String)
+
+        path.split("::").last
+      end
     end
   end
 end

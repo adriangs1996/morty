@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
 require "rspec"
+require "dry/struct"
+require "dry/types"
 require "morty"
 require_relative "support/test_classes"
+
+module Types
+  include Dry.Types()
+end
 
 # Add presence check for Hash and Array
 class Hash
