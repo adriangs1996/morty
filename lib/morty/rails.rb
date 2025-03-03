@@ -1,10 +1,8 @@
 # frozen_string_literal: true
 
-require "morty"
-require "morty/rails/engine"
-require "morty/rails/controller"
-require "morty/rails/routes"
 require "morty/rails/configuration"
+require "morty/rails/endpoint_wrapper_controller"
+require "morty/rails/routes"
 
 module Morty
   module Rails

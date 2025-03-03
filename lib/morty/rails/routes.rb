@@ -4,7 +4,11 @@ module Morty
   module Rails
     # This module is in charge of making each registered Morty Endpoint
     # routeable through rails
-    module Routes
+    class Routes
+      def initialize(drawer)
+        @drawer = drawer
+      end
+
       def mount_morty_endpoints
         Morty::EndpointRegistry.registry.each do |endpoint|
           mount_endpoint(endpoint)
@@ -27,13 +31,13 @@ module Morty
 
         case endpoint.http_method
         when :get
-          get path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
+          @drawer.get path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
         when :post
-          post path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
+          @drawer.post path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
         when :put
-          put path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
+          @drawer.put path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
         when :delete
-          delete path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
+          @drawer.delete path, to: "morty/rails/endpoint_wrapper#handle", defaults: defaults, constraints: constraints
         end
       end
     end
