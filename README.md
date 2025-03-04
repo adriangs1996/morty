@@ -1,39 +1,158 @@
 # Morty
 
-TODO: Delete this and the text below, and describe your gem
+Morty is a Ruby gem that simplifies API endpoint management and documentation for Ruby on Rails applications. It provides a clean DSL for defining API endpoints with input/output contracts and automatically generates OpenAPI documentation.
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/morty`. To experiment with that code, run `bin/console` for an interactive prompt.
+[![Gem Version](https://badge.fury.io/rb/morty.svg)](https://badge.fury.io/rb/morty)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## Features
+
+- 🚀 Simple DSL for defining API endpoints
+- 📝 Automatic OpenAPI documentation generation
+- ✨ Input/Output contract validation
+- 🎯 Dependency injection support
+- 🛣️ Seamless Rails integration
 
 ## Installation
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+Add this line to your application's Gemfile:
 
-Install the gem and add to the application's Gemfile by executing:
+```ruby
+gem 'morty'
+```
 
-    $ bundle add UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+And then execute:
 
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-    $ gem install UPDATE_WITH_YOUR_GEM_NAME_PRIOR_TO_RELEASE_TO_RUBYGEMS_ORG
+```bash
+bundle install
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+### Basic Example
 
-## Development
+```ruby
+class UserProfileEndpoint < ApplicationController
+  include Morty::ApiMetadata
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+  # Define an endpoint with input/output contracts
+  get input: UserProfileInput, output: UserProfileOutput, path: '/api/v1/users/:id/profile'
+  def call(input)
+    user = User.find(input.id)
+    UserProfileOutput.new(
+      id: user.id,
+      name: user.name,
+      email: user.email
+    )
+  end
+end
+```
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### Input/Output Contracts
+
+```ruby
+class UserProfileInput < Morty::Model
+  attribute :id, Types::Integer
+  attribute :include_details, Types::Bool.optional.default(false)
+end
+
+class UserProfileOutput < Morty::Model
+  attribute :id, Types::Integer
+  attribute :name, Types::String
+  attribute :email, Types::String
+end
+```
+
+### Dependency Injection
+
+```ruby
+class UserService
+  include Morty::DependenciesDsl
+
+  # Inject dependencies
+  inject UserRepository
+  inject EmailService, as: :mailer
+
+  def process_user(id)
+    user = @user_repository.find_user(id)
+    @email_service.send_email(user.email, "Welcome!")
+  end
+end
+```
+
+### Rails Integration
+
+In your `config/routes.rb`:
+
+```ruby
+Rails.application.routes.draw do
+  Morty::Rails::Routes.new(self).mount_controllers
+end
+```
+
+## OpenAPI Documentation
+
+Morty automatically generates OpenAPI documentation for your API endpoints. The documentation includes:
+
+- Endpoint paths and HTTP methods
+- Request/response schemas
+- Input validation rules
+- Error responses
+
+To generate the OpenAPI documentation:
+
+```ruby
+generator = Morty::OpenapiGenerator.new(
+  prefix: "/api",
+  title: "My API",
+  version: "v1"
+)
+generator.generate
+```
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/morty. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/morty/blob/main/CODE_OF_CONDUCT.md).
+We love your input! We want to make contributing to Morty as easy and transparent as possible, whether it's:
+
+- Reporting a bug
+- Discussing the current state of the code
+- Submitting a fix
+- Proposing new features
+- Becoming a maintainer
+
+### Development Process
+
+1. Fork the repo and create your branch from `master`
+2. If you've added code, please, add some tests to contribute to gem health
+3. If you've changed APIs, update the documentation accordingly
+4. Ensure the test suite passes
+5. Make sure your code lints
+6. Issue that pull request!
+
+### Running Tests
+
+```bash
+bundle install
+bundle exec rspec
+```
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+MIT License. See [LICENSE](LICENSE) for details.
 
 ## Code of Conduct
 
-Everyone interacting in the Morty project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/morty/blob/main/CODE_OF_CONDUCT.md).
+This project follows the [Contributor Covenant](https://www.contributor-covenant.org/version/2/0/code_of_conduct/) Code of Conduct.
+
+## Support
+
+If you have any questions or need help with Morty:
+
+- Open an [issue](https://github.com/yourusername/morty/issues)
+- Join our [Discord community](#) (coming soon)
+
+## Credits
+
+Morty is maintained by [Adrian Gonzalez] and was inspired by the need for a simple,
+yet powerful API management solution in the Ruby ecosystem, that integrates well
+with existing frameworks. We deserve a FastAPI experience within the ruby side.

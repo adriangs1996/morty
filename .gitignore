@@ -10,3 +10,7 @@
 # rspec failure tracking
 .rspec_status
 *.lock
+
+docs/.vitepress/dist
+docs/.vitepress/cache
+node_modules
