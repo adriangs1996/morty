@@ -20,20 +20,18 @@ module Morty
     end
 
     def api_name
-      name.gsub("::", "/").downcase.gsub(/endpoint$/, "")
+      Utils::StringTransformations.underscore(name.gsub("::", "/")).gsub(/_endpoint$/, "").split("#").first
     end
 
     def controller_name
-      Utils::StringTransformations.underscore(@name.split("::").last).gsub(/_controller$/, "").gsub(/_endpoint$/, "")
+      Utils::StringTransformations.underscore(@name.split("#").first.split("::").join("/"))
     end
 
     def infer_path_from_class
       # Remove 'Endpoint' suffix if present and convert to path
-      "/" + Utils::StringTransformations.underscore(@name) # rubocop:disable Style/StringConcatenation
-                                        .gsub(/_endpoint$/, "")      # Remove 'Endpoint' suffix
-                                        .gsub(/_controller$/, "")    # Remove any '_controller' suffix
-                                        .gsub(%r{^/}, "") # Remove leading slash if present
-                                        .gsub(%r{^/}, "") # Remove leading slash if present
+      "/" + @name.split("#").first.split("::").map do |s|
+        Utils::StringTransformations.underscore(s).gsub(/_endpoint$/, "").gsub(/_controller$/, "")
+      end.join("/")
     end
 
     def generate_openapi_schema # rubocop:disable Metrics/MethodLength
@@ -135,7 +133,7 @@ module Morty
         get: :get
       }
 
-      "#{names_map[@http_method]}_#{controller_name}"
+      "#{names_map[@http_method]}_#{controller_name.split("/").last.gsub(/_controller$/, "")}"
     end
   end
 end
