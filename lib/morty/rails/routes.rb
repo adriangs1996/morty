@@ -26,17 +26,11 @@ module Morty
       def mount_controller(endpoint)
         return unless endpoint.routeable?
 
-        constraints = lambda do |request|
-          request.env["morty.endpoint_class"] = endpoint
-          true
-        end
-
         @drawer.send(
           endpoint.http_method,
           endpoint.path,
-          to: "#{endpoint.controller_name.gsub(/_controller$/, "")}#execute",
-          as: "#{endpoint.http_method}_#{endpoint.api_name}",
-          constraints: constraints
+          to: "#{endpoint.controller_name.gsub(/_controller$/, "")}##{endpoint.action}",
+          as: "#{endpoint.http_method}_#{endpoint.api_name}"
         )
       end
 

@@ -40,6 +40,20 @@ module Morty
         EndpointRegistry.registry << Endpoint.new(**@__endpoint_signature__.merge(
           name: reflect_method_name(method_name), action: method_name
         ))
+        input_class = @__endpoint_signature__[:input_class]
+        @__endpoint_signature__ = nil
+        return unless defined?(::Rails) && ::Rails.application.config.morty.wrap_methods
+
+        rails_wrap_method_with_no_params_call(method_name, input_class)
+      end
+
+      def rails_wrap_method_with_no_params_call(method_name, input_class)
+        original_method = instance_method(method_name)
+        define_method(method_name) do
+          input = input_class.new(params.to_unsafe_h.to_h.deep_transform_keys(&:to_sym))
+          output = original_method.bind_call(self, input)
+          render json: output.to_h, status: :ok
+        end
       end
 
       def register_endpoint(http_method, input_class, output_class, path)
