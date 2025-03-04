@@ -129,7 +129,7 @@ module Api
 
     # GET /api/books
     get input: Empty, output: ListAllBooksOutput
-    def list_all_books
+    def list_all_books(_params)
       ListAllBooksOutput.new(books: @books.list_books)
     end
 
