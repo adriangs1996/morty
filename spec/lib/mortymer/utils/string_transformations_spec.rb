@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 require "spec_helper"
-require "morty/utils/string_transformations"
+require "mortymer/utils/string_transformations"
 
-RSpec.describe Morty::Utils::StringTransformations do # rubocop:disable Metrics/BlockLength
+RSpec.describe Mortymer::Utils::StringTransformations do # rubocop:disable Metrics/BlockLength
   describe ".underscore" do # rubocop:disable Metrics/BlockLength
     subject { described_class.underscore(string) }
 

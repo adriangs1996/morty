@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   VERSION = "0.0.2"
 end

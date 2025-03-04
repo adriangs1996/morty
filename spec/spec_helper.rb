@@ -3,7 +3,7 @@
 require "rspec"
 require "dry/struct"
 require "dry/types"
-require "morty"
+require "mortymer"
 require_relative "support/test_classes"
 
 module Types

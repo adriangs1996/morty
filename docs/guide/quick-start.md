@@ -1,8 +1,8 @@
 # Quick Start
 
-This guide will help you get started with Morty in just a few minutes.
-We'll create a simple API endpoint that demonstrates the core features of Morty
-by integrating it in a Rails API, let's call it Rails and Morty.
+This guide will help you get started with Mortymer in just a few minutes.
+We'll create a simple API endpoint that demonstrates the core features of Mortymer
+by integrating it in a Rails API, let's call it Rails and Mortymer.
 
 ## Basic Setup
 
@@ -15,7 +15,7 @@ cd my_api
 
 ## Installation
 
-Add Morty to your Gemfile:
+Add Mortymer to your Gemfile:
 
 ```ruby
 gem 'morty'
@@ -27,7 +27,7 @@ Then install it:
 bundle install
 ```
 
-Morty requires that every class is autoloaded for it to work. This is deafault rails
+Mortymer requires that every class is autoloaded for it to work. This is deafault rails
 behavior when running in production, but it is disabled by default on development, so,
 we first need to enable eager load
 
@@ -42,19 +42,19 @@ Rails.application.configure do
 end
 ```
 
-In rails environments, Morty can automatically create the routes for you, it is not necessary
+In rails environments, Mortymer can automatically create the routes for you, it is not necessary
 that you register them one by one.
 
 ```ruby
 # config/routes.rb
 Rails.application.routes.draw do
-  Morty::Rails::Routes.new(self).mount_controllers
+  Mortymer::Rails::Routes.new(self).mount_controllers
 end
 ```
 
 ## Creating Your First API
 
-Let's build a simple book API to demonstrate Morty's key features.
+Let's build a simple book API to demonstrate Mortymer's key features.
 
 ### 1. Define Your Type
 
@@ -62,7 +62,7 @@ Create a Book type that defines the structure of your data:
 
 ```ruby
 # app/types/book.rb
-class Book < Morty::Model
+class Book < Mortymer::Model
   attribute :id, Integer
   attribute :title, String
   attribute :author, String
@@ -106,7 +106,7 @@ end
 
 ### 3. Create a Controller
 
-Set up your API controller with Morty's features:
+Set up your API controller with Mortymer's features:
 
 ```ruby
 # app/controllers/api/books_controller.rb
@@ -114,14 +114,14 @@ module Api
   class BooksController < ApplicationController
     inject BookService, as: :books
 
-    class Empty < Morty::Model
+    class Empty < Mortymer::Model
     end
 
-    class ListAllBooksOutput < Morty::Model
+    class ListAllBooksOutput < Mortymer::Model
       attribute :books, Array.of(Book)
     end
 
-    class CreateBookInput < Morty::Model
+    class CreateBookInput < Mortymer::Model
       attribute :title, String
       attribute :author, String
       attribute :published_year, Coercible::Integer
@@ -174,17 +174,17 @@ curl http://localhost:3000/api/books
 
 ## Key Features Demonstrated
 
-This simple example showcases several of Morty's powerful features:
+This simple example showcases several of Mortymer's powerful features:
 
-- ✨ **Type System**: Strong typing with `Morty::Models` which are powered by `Dry::Struct`
+- ✨ **Type System**: Strong typing with `Mortymer::Models` which are powered by `Dry::Struct`
 - 🔌 **Dependency Injection**: Clean service injection with `inject :book_service`
 - ✅ **Parameter Validation**: Built-in request validation in controllers
 
 ## Next Steps
 
-Now that you have a basic understanding of Morty, you might want to explore:
+Now that you have a basic understanding of Mortymer, you might want to explore:
 
-- [Type System](./type-system.md) - Learn more about Morty's type system
+- [Type System](./type-system.md) - Learn more about Mortymer's type system
 - [Dependency Injection](./dependency-injection.md) - Deep dive into DI patterns
 - [Controllers](./controllers.md) - Advanced controller features
 - [API Metadata](./api-metadata.md) - API documentation capabilities

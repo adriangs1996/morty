@@ -3,7 +3,7 @@
 require_relative "endpoint_registry"
 require_relative "utils/string_transformations"
 
-module Morty
+module Mortymer
   # Generate an openapi doc based on the registered endpoints
   class OpenapiGenerator
     include Utils::StringTransformations

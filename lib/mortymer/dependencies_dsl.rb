@@ -2,7 +2,7 @@
 
 require_relative "utils/string_transformations"
 
-module Morty
+module Mortymer
   # A simple dsl to declare class dependencies for injection
   module DependenciesDsl
     def self.included(base)

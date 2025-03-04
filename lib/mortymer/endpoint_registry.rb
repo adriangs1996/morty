@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   # A global registry of all defined endpoints
   class EndpointRegistry
     class << self

@@ -5,7 +5,7 @@ require_relative "endpoint_registry"
 require_relative "endpoint"
 require_relative "utils/string_transformations"
 
-module Morty
+module Mortymer
   # Include this module in your classes to register
   # and configure your classes as API endpoints.
   module ApiMetadata

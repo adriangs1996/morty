@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Morty::DependenciesDsl do # rubocop:disable Metrics/BlockLength
+RSpec.describe Mortymer::DependenciesDsl do # rubocop:disable Metrics/BlockLength
   describe "class methods" do
     describe ".inject" do
       it "adds dependency to the dependencies list" do
@@ -34,9 +34,9 @@ RSpec.describe Morty::DependenciesDsl do # rubocop:disable Metrics/BlockLength
 
   describe "instance methods" do # rubocop:disable Metrics/BlockLength
     before(:each) do
-      Morty::Container.register_constant(Database, Database.new)
-      Morty::Container.register_constant(MyLogger, MyLogger.new)
-      Morty::Container.register_constant(EmailService) { EmailService.new }
+      Mortymer::Container.register_constant(Database, Database.new)
+      Mortymer::Container.register_constant(MyLogger, MyLogger.new)
+      Mortymer::Container.register_constant(EmailService) { EmailService.new }
     end
 
     describe "#initialize" do

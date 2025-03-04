@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   # Represents an endpoint in a given system
   class Endpoint
     attr_reader :http_method, :path, :input_class, :output_class, :controller_class, :action, :name

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   module Utils
     # Provides string transformation utilities similar to ActiveSupport's methods
     module StringTransformations

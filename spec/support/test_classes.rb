@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require "dry/struct"
-require "morty"
+require "mortymer"
 
 # Test classes for dependency injection
 class Database
@@ -17,7 +17,7 @@ class MyLogger
 end
 
 class UserRepository
-  include Morty::DependenciesDsl
+  include Mortymer::DependenciesDsl
 
   inject Database
   inject MyLogger, as: :logger_service
@@ -29,7 +29,7 @@ class UserRepository
 end
 
 class EmailService
-  include Morty::DependenciesDsl
+  include Mortymer::DependenciesDsl
 
   inject MyLogger
 
@@ -40,7 +40,7 @@ class EmailService
 end
 
 class UserService
-  include Morty::DependenciesDsl
+  include Mortymer::DependenciesDsl
 
   inject UserRepository
   inject EmailService
@@ -52,12 +52,12 @@ class UserService
 end
 
 class CircularA
-  include Morty::DependenciesDsl
+  include Mortymer::DependenciesDsl
   inject :CircularB
 end
 
 class CircularB
-  include Morty::DependenciesDsl
+  include Mortymer::DependenciesDsl
   inject :CircularA
 end
 

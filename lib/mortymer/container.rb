@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   # Base container for dependency injection
   class Container
     class Error < StandardError; end

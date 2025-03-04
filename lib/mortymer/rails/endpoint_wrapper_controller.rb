@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   module Rails
     # This controller acts as a wrapper for Morty endpoints, handling param conversion
     # and response rendering

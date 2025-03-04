@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   module Rails
     # A configuration api for Rails & Morty integration
     class Configuration

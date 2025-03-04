@@ -2,8 +2,8 @@
 
 require "spec_helper"
 
-RSpec.describe Morty::OpenapiGenerator do # rubocop:disable Metrics/BlockLength
-  include Morty::Utils::StringTransformations
+RSpec.describe Mortymer::OpenapiGenerator do # rubocop:disable Metrics/BlockLength
+  include Mortymer::Utils::StringTransformations
 
   let(:test_input) do
     Class.new(Dry::Struct) do
@@ -24,7 +24,7 @@ RSpec.describe Morty::OpenapiGenerator do # rubocop:disable Metrics/BlockLength
   end
 
   let(:endpoint) do
-    Morty::Endpoint.new(
+    Mortymer::Endpoint.new(
       http_method: :post,
       input_class: test_input,
       output_class: test_output,
@@ -93,7 +93,7 @@ RSpec.describe Morty::OpenapiGenerator do # rubocop:disable Metrics/BlockLength
 
     context "with non-routeable endpoints" do
       let(:non_routeable_endpoint) do
-        instance_double(Morty::Endpoint, routeable?: false)
+        instance_double(Mortymer::Endpoint, routeable?: false)
       end
       let(:registry) { [non_routeable_endpoint] }
 

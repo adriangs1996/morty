@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   # A base model for defining schemas
   class Model < Dry::Struct
     include Dry.Types()

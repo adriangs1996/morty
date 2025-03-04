@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Morty::Container do # rubocop:disable Metrics/BlockLength
+RSpec.describe Mortymer::Container do # rubocop:disable Metrics/BlockLength
   before(:each) do
     # Clear the registry before each test
     described_class.instance_variable_set(:@registry, {})
@@ -74,13 +74,13 @@ RSpec.describe Morty::Container do # rubocop:disable Metrics/BlockLength
     it "detects circular dependencies" do
       expect do
         described_class.resolve_constant(CircularA)
-      end.to raise_error(Morty::Container::DependencyError, /Circular dependency detected/)
+      end.to raise_error(Mortymer::Container::DependencyError, /Circular dependency detected/)
     end
 
     it "raises NotFoundError for unregistered constants" do
       expect do
         described_class.resolve_constant("UnregisteredService")
-      end.to raise_error(Morty::Container::NotFoundError)
+      end.to raise_error(Mortymer::Container::NotFoundError)
     end
   end
 end

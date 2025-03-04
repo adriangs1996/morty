@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Morty
+module Mortymer
   module Rails
     # This module is in charge of making each registered Morty Endpoint
     # routeable through rails

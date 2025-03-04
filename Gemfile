@@ -2,8 +2,8 @@
 
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in morty.gemspec
-gemspec
+# Specify your gem's dependencies in mortymer.gemspec
+gemspec name: "mortymer"
 
 gem "rake", "~> 13.0"
 

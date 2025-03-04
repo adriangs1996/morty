@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative "lib/morty/version"
+require_relative "lib/mortymer/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "morty"
-  spec.version = Morty::VERSION
+  spec.name = "mortymer"
+  spec.version = Mortymer::VERSION
   spec.authors = ["Adrian Gonzalez"]
   spec.email = ["adriangonzalezsanchez1996@gmail.com"]
 
@@ -40,9 +40,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-validation", "~> 1.11"
 
   spec.add_development_dependency "rails", "~> 8.0"
-  spec.add_development_dependency "rspec-rails"
-  spec.add_development_dependency "sqlite3", "~> 2.4"
-
   # For more information and examples about making a new gem, check out our
   # guide at: https://bundler.io/guides/creating_gem.html
 end
