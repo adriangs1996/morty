@@ -1,5 +1,14 @@
 # Morty
 
+```markdown
+███╗   ███╗ ██████╗ ██████╗ ████████╗██╗   ██╗
+████╗ ████║██╔═══██╗██╔══██╗╚══██╔══╝╚██╗ ██╔╝
+██╔████╔██║██║   ██║██████╔╝   ██║    ╚████╔╝ 
+██║╚██╔╝██║██║   ██║██╔══██╗   ██║     ╚██╔╝  
+██║ ╚═╝ ██║╚██████╔╝██║  ██║   ██║      ██║   
+╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   
+```
+
 Morty is a Ruby gem that simplifies API endpoint management and documentation for Ruby on Rails applications. It provides a clean DSL for defining API endpoints with input/output contracts and automatically generates OpenAPI documentation.
 
 [![Gem Version](https://badge.fury.io/rb/morty.svg)](https://badge.fury.io/rb/morty)
