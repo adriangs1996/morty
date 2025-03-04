@@ -6,6 +6,27 @@ The `ApiMetadata` module is a core component of Morty that allows you to define 
 
 Include the `ApiMetadata` module in your endpoint classes to use the DSL:
 
+````ruby
+class UserEndpoint
+  include Morty::ApiMetadata
+
+  # Define a GET endpoint
+  get input: UserSearchInput,
+      output: UserSearchOutput
+
+  def call(input)
+    # Your endpoint logic here
+    UserSearchOutput.new(...)
+  end
+end
+# API Metadata
+
+The `ApiMetadata` module is a core component of Morty that allows you to define and configure API endpoints in your Ruby classes. It provides a clean DSL for declaring HTTP endpoints with their input/output types and automatically handles endpoint registration and Rails integration.
+
+## Basic Usage
+
+Include the `ApiMetadata` module in your endpoint classes to use the DSL:
+
 ```ruby
 class UserEndpoint
   include Morty::ApiMetadata
@@ -19,7 +40,7 @@ class UserEndpoint
     UserSearchOutput.new(...)
   end
 end
-```
+````
 
 ## HTTP Method DSL
 
