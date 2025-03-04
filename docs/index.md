@@ -3,7 +3,7 @@ home: true
 layout: home
 
 hero:
-  name: "Morty"
+  name: "Mortymer"
   text: "Modern Ruby API Development"
   tagline: Build type-safe, documented, and maintainable APIs using the ruby ecosystem you love.
   actions:

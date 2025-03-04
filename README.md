@@ -1,15 +1,14 @@
-# Morty
+# Mortymer
 
 ```markdown
-███╗   ███╗ ██████╗ ██████╗ ████████╗██╗   ██╗
-████╗ ████║██╔═══██╗██╔══██╗╚══██╔══╝╚██╗ ██╔╝
-██╔████╔██║██║   ██║██████╔╝   ██║    ╚████╔╝ 
-██║╚██╔╝██║██║   ██║██╔══██╗   ██║     ╚██╔╝  
-██║ ╚═╝ ██║╚██████╔╝██║  ██║   ██║      ██║   
-╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝      ╚═╝   
+███╗   ███╗ ██████╗ ██████╗ ████████╗██╗   ██╗███╗   ███╗███████╗██████╗ 
+████╗ ████║██╔═══██╗██╔══██╗╚══██╔══╝╚██╗ ██╔╝████╗ ████║██╔════╝██╔══██╗
+██╔████╔██║██║   ██║██████╔╝   ██║    ╚████╔╝ ██╔████╔██║█████╗  ██████╔╝
+██║╚██╔╝██║██║   ██║██╔══██╗   ██║     ╚██╔╝  ██║╚██╔╝██║██╔══╝  ██╔══██╗
+██║ ╚═╝ ██║╚██████╔╝██║  ██║   ██║      ██║   ██║ ╚═╝ ██║███████╗██║  ██║
 ```
 
-Morty is a Ruby gem that simplifies API endpoint management and documentation for Ruby on Rails applications. It provides a clean DSL for defining API endpoints with input/output contracts and automatically generates OpenAPI documentation.
+Mortymer is a Ruby gem that simplifies API endpoint management and documentation for Ruby on Rails applications. It provides a clean DSL for defining API endpoints with input/output contracts and automatically generates OpenAPI documentation.
 
 [![Gem Version](https://badge.fury.io/rb/morty.svg)](https://badge.fury.io/rb/morty)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -27,7 +26,7 @@ Morty is a Ruby gem that simplifies API endpoint management and documentation fo
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'morty'
+gem 'mortymer'
 ```
 
 And then execute:
@@ -42,7 +41,7 @@ bundle install
 
 ```ruby
 class UserProfileEndpoint < ApplicationController
-  include Morty::ApiMetadata
+  include Mortymer::ApiMetadata
 
   # Define an endpoint with input/output contracts
   get input: UserProfileInput, output: UserProfileOutput, path: '/api/v1/users/:id/profile'
@@ -60,12 +59,12 @@ end
 ### Input/Output Contracts
 
 ```ruby
-class UserProfileInput < Morty::Model
+class UserProfileInput < Mortymer::Model
   attribute :id, Types::Integer
   attribute :include_details, Types::Bool.optional.default(false)
 end
 
-class UserProfileOutput < Morty::Model
+class UserProfileOutput < Mortymer::Model
   attribute :id, Types::Integer
   attribute :name, Types::String
   attribute :email, Types::String
@@ -76,7 +75,7 @@ end
 
 ```ruby
 class UserService
-  include Morty::DependenciesDsl
+  include Mortymer::DependenciesDsl
 
   # Inject dependencies
   inject UserRepository
@@ -95,13 +94,13 @@ In your `config/routes.rb`:
 
 ```ruby
 Rails.application.routes.draw do
-  Morty::Rails::Routes.new(self).mount_controllers
+  Mortymer::Rails::Routes.new(self).mount_controllers
 end
 ```
 
 ## OpenAPI Documentation
 
-Morty automatically generates OpenAPI documentation for your API endpoints. The documentation includes:
+Mortymer automatically generates OpenAPI documentation for your API endpoints. The documentation includes:
 
 - Endpoint paths and HTTP methods
 - Request/response schemas
@@ -111,7 +110,7 @@ Morty automatically generates OpenAPI documentation for your API endpoints. The 
 To generate the OpenAPI documentation:
 
 ```ruby
-generator = Morty::OpenapiGenerator.new(
+generator = Mortymer::OpenapiGenerator.new(
   prefix: "/api",
   title: "My API",
   version: "v1"
@@ -121,7 +120,7 @@ generator.generate
 
 ## Contributing
 
-We love your input! We want to make contributing to Morty as easy and transparent as possible, whether it's:
+We love your input! We want to make contributing to Mortymer as easy and transparent as possible, whether it's:
 
 - Reporting a bug
 - Discussing the current state of the code
@@ -155,13 +154,13 @@ This project follows the [Contributor Covenant](https://www.contributor-covenant
 
 ## Support
 
-If you have any questions or need help with Morty:
+If you have any questions or need help with Mortymer:
 
-- Open an [issue](https://github.com/yourusername/morty/issues)
+- Open an [issue](https://github.com/yourusername/mortymer/issues)
 - Join our [Discord community](#) (coming soon)
 
 ## Credits
 
-Morty is maintained by [Adrian Gonzalez] and was inspired by the need for a simple,
+Mortymer is maintained by [Adrian Gonzalez] and was inspired by the need for a simple,
 yet powerful API management solution in the Ruby ecosystem, that integrates well
 with existing frameworks. We deserve a FastAPI experience within the ruby side.

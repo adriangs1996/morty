@@ -2,7 +2,7 @@ import { defineConfig } from "vitepress";
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "Morty",
+  title: "Mortymer",
   description:
     "Standalone API definition for ruby frameworks based on dry.rb. Rails compatible from day 0 with a full Ruby flavored dependency injection engine.",
   markdown: {

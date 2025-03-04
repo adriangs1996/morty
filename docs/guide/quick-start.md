@@ -18,7 +18,7 @@ cd my_api
 Add Mortymer to your Gemfile:
 
 ```ruby
-gem 'morty'
+gem 'mortymer'
 ```
 
 Then install it:
@@ -112,6 +112,9 @@ Set up your API controller with Mortymer's features:
 # app/controllers/api/books_controller.rb
 module Api
   class BooksController < ApplicationController
+    include Mortymer::DependeciesDsl
+    include Mortymer::ApiMetadata
+
     inject BookService, as: :books
 
     class Empty < Mortymer::Model
