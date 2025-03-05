@@ -25,7 +25,7 @@ features, I strongly believe that if you are able to define the shape of your en
 you should be able to use a fully Parsed object from your params, much like FastAPI's approach.
 Im tire of beign jelous of FastAPI and want to use Ruby in a similar way, that's when Mortymer was born.
 
-The name Mortymer comes from the popular series Rick and Mortymer, where Mortymer is like an assistant, a
-faithful companion. And that is what this gem aims to be, not a replacement for any existent framework,
+The name Mortymer comes from the popular series Rick and Morty, where Morty is like an assistant, a
+faithful companion (Mortymer itself is the pet of a heroe of Dota2). And that is what this gem aims to be, not a replacement for any existent framework,
 but a companion that allows the real heroes (Rails, Sinatra, Grape, etc) shine with their cool features,
 and not get bored with the API handling stuff.
