@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require "morty/rails/configuration"
-require "morty/rails/endpoint_wrapper_controller"
-require "morty/rails/routes"
+require "mortymer/rails/configuration"
+require "mortymer/rails/endpoint_wrapper_controller"
+require "mortymer/rails/routes"
 
 module Mortymer
   module Rails
