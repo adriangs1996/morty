@@ -47,12 +47,14 @@ module Mortymer
 
       # Inject all declared dependencies
       # @param overrides [Hash] Optional dependency overrides for named dependencies
-      def inject_dependencies(overrides = {})
+      # @param container [Mortymer::Container] Optional container to use for dependency resolution
+      def inject_dependencies(overrides = {}, container = nil)
+        container ||= Mortymer.config&.container || Container.new
         self.class.dependencies.each do |dep|
           value = if overrides.key?(dep[:var_name].to_sym)
                     overrides[dep[:var_name].to_sym]
                   else
-                    Container.resolve_constant(dep[:constant])
+                    container.resolve_constant(dep[:constant])
                   end
 
           instance_variable_set("@#{dep[:var_name]}", value)
