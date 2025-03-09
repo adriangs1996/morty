@@ -2,6 +2,7 @@
 # typed: true
 
 require "dry/struct"
+require "mortymer/configuration"
 require "mortymer/model"
 require "mortymer/endpoint"
 require "mortymer/dry_swagger"
