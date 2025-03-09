@@ -1,0 +1,42 @@
+name: Take a release and deploy it to rubygems
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    name: Build and Publish
+    environment: rubygems
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Update version number
+        run: |
+          # Extract version from the release tag (v1.2.3 -> 1.2.3)
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "Updating version to $VERSION"
+          # Update the version.rb file
+          sed -i "s/VERSION = \".*\"/VERSION = \"$VERSION\"/" lib/mortymer/version.rb
+
+          # Configure Git
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          # Commit the version change
+          git add lib/mortymer/version.rb
+          git commit -m "Bump version to $VERSION [skip ci]"
+          git push
+
+      - name: Publish to rubygems
+        uses: rubygems/release-gem@v1
