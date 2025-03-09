@@ -93,7 +93,11 @@ module Mortymer
     def generate_parameters
       return [] unless @input_class && %i[get delete].include?(@http_method)
 
-      schema = Dry::Swagger::DocumentationGenerator.new.from_struct(@input_class)
+      schema = if @input_class.respond_to?(:json_schema)
+                 @input_class.json_schema
+               else
+                 Dry::Swagger::DocumentationGenerator.new.from_struct(@input_class)
+               end
       schema[:properties]&.map do |name, property|
         {
           name: name,

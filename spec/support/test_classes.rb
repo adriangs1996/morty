@@ -91,3 +91,21 @@ class UserProfileOutput < Dry::Struct
   attribute :email, Types::String
   attribute :profile_completed, Types::Bool
 end
+
+class QueryParamsInput
+  def self.json_schema
+    {
+      type: :object,
+      properties: {
+        name: { type: "string" },
+        age: { type: "integer" }
+      },
+      required: [:name]
+    }
+  end
+end
+
+class SimpleQueryParamsInput < Dry::Struct
+  attribute :email, Types::String
+  attribute :active, Types::Bool
+end
