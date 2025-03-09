@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "concurrent"
+
 module Mortymer
   # Base container for dependency injection
   class Container
@@ -39,7 +41,7 @@ module Mortymer
 
     attr_reader :registry
 
-    def initialize(initial_registry = {})
+    def initialize(initial_registry = Concurrent::Hash.new)
       @registry = initial_registry
     end
 
