@@ -14,6 +14,7 @@ module Mortymer
       if ::Rails.application.config.cache_classes == false
         app.reloader.before_class_unload do
           Mortymer::EndpointRegistry.clear
+          Mortymer.config.container.registry.clear
         end
 
         app.reloader.to_prepare do
