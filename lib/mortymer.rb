@@ -12,5 +12,6 @@ require "mortymer/api_metadata"
 require "mortymer/openapi_generator"
 require "mortymer/container"
 require "mortymer/dependencies_dsl"
+require "mortymer/security_schemes"
 require "mortymer/rails" if defined?(Rails)
 require "mortymer/railtie" if defined?(Rails::Railtie)

@@ -8,12 +8,14 @@ module Mortymer
   class OpenapiGenerator
     include Utils::StringTransformations
 
-    def initialize(prefix: "", title: "Rick on Rails API", version: "v1", description: "", registry: [])
+    def initialize(prefix: "", title: "Rick on Rails API", version: "v1", description: "", registry: [],
+                   security_schemes: {})
       @prefix = prefix
       @title = title
       @version = version
       @description = description
       @endpoints_registry = registry
+      @security_schemes = security_schemes
     end
 
     def generate
@@ -21,7 +23,10 @@ module Mortymer
         openapi: "3.0.1",
         info: { title: @title, version: @version, description: @description },
         paths: generate_paths,
-        components: { schemas: generate_schemas }
+        components: {
+          schemas: generate_schemas,
+          securitySchemes: @security_schemes
+        }
       }
     end
 
@@ -62,13 +67,21 @@ module Mortymer
 
         if endpoint.input_class && !schemas.key?(demodulize(endpoint.input_class.name))
           schemas[demodulize(endpoint.input_class.name)] =
-            Dry::Swagger::DocumentationGenerator.new.from_struct(endpoint.input_class)
+            if endpoint.input_class.respond_to?(:json_schema)
+              endpoint.input_class.json_schema
+            else
+              Dry::Swagger::DocumentationGenerator.new.from_struct(endpoint.input_class)
+            end
         end
 
-        if endpoint.output_class && !schemas.key?(demodulize(endpoint.output_class.name))
-          schemas[demodulize(endpoint.output_class.name)] =
+        next unless endpoint.output_class && !schemas.key?(demodulize(endpoint.output_class.name))
+
+        schemas[demodulize(endpoint.output_class.name)] =
+          if endpoint.output_class.respond_to?(:json_schema)
+            endpoint.output_class.json_schema
+          else
             Dry::Swagger::DocumentationGenerator.new.from_struct(endpoint.output_class)
-        end
+          end
       end
       schemas
     end

@@ -13,6 +13,7 @@ module Mortymer
       @path = opts[:path] || infer_path_from_class
       @controller_class = opts[:controller_class]
       @action = opts[:action]
+      @security = opts[:security]
     end
 
     def routeable?
@@ -37,7 +38,7 @@ module Mortymer
     def generate_openapi_schema # rubocop:disable Metrics/MethodLength
       return unless defined?(@input_class) && defined?(@output_class)
 
-      input_schema = Dry::Swagger::DocumentationGenerator.new.from_struct(@input_class)
+      input_schema = @input_class.respond_to?(:json_schema) ? @input_class.json_schema : Dry::Swagger::DocumentationGenerator.new.from_struct(@input_class)
       responses = {
         "200" => {
           description: "Successful response",
@@ -61,14 +62,16 @@ module Mortymer
         }
       end
 
+      operation = {
+        operation_id: operation_id,
+        parameters: generate_parameters,
+        requestBody: generate_request_body,
+        responses: responses
+      }
+      operation[:security] = security if @security
       {
         path.to_s => {
-          http_method.to_s => {
-            operation_id: operation_id,
-            parameters: generate_parameters,
-            requestBody: generate_request_body,
-            responses: responses
-          }
+          http_method.to_s => operation
         }
       }
     end
@@ -88,6 +91,16 @@ module Mortymer
       end
 
       has_required || has_coercions
+    end
+
+    def security
+      return [] if @security.nil?
+
+      return [{ @security => [] }] if @security.is_a?(Symbol)
+
+      return [@security.scheme] if @security.respond_to?(:scheme)
+
+      [@security]
     end
 
     def generate_parameters

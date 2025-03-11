@@ -15,20 +15,20 @@ module Mortymer
 
     # The DSL
     module ClassMethods
-      def get(input:, output:, path: nil)
-        register_endpoint(:get, input, output, path)
+      def get(input:, output:, path: nil, security: nil)
+        register_endpoint(:get, input, output, path, security)
       end
 
-      def post(input:, output:, path: nil)
-        register_endpoint(:post, input, output, path)
+      def post(input:, output:, path: nil, security: nil)
+        register_endpoint(:post, input, output, path, security)
       end
 
-      def put(input:, output:, path: nil)
-        register_endpoint(:put, input, output, path)
+      def put(input:, output:, path: nil, security: nil)
+        register_endpoint(:put, input, output, path, security)
       end
 
-      def delete(input:, output:, path: nil)
-        register_endpoint(:delete, input, output, path)
+      def delete(input:, output:, path: nil, security: nil)
+        register_endpoint(:delete, input, output, path, security)
       end
 
       private
@@ -56,14 +56,15 @@ module Mortymer
         end
       end
 
-      def register_endpoint(http_method, input_class, output_class, path)
+      def register_endpoint(http_method, input_class, output_class, path, security)
         @__endpoint_signature__ =
           {
             http_method: http_method,
             input_class: input_class,
             output_class: output_class,
             path: path,
-            controller_class: self
+            controller_class: self,
+            security: security
           }
       end
 
