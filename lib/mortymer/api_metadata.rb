@@ -15,20 +15,28 @@ module Mortymer
 
     # The DSL
     module ClassMethods
+      def secured_with(security)
+        @__endpoint_security__ = security
+      end
+
+      def remove_security!
+        @__endpoint_security__ = nil
+      end
+
       def get(input:, output:, path: nil, security: nil)
-        register_endpoint(:get, input, output, path, security)
+        register_endpoint(:get, input, output, path, security || @__endpoint_security__)
       end
 
       def post(input:, output:, path: nil, security: nil)
-        register_endpoint(:post, input, output, path, security)
+        register_endpoint(:post, input, output, path, security || @__endpoint_security__)
       end
 
       def put(input:, output:, path: nil, security: nil)
-        register_endpoint(:put, input, output, path, security)
+        register_endpoint(:put, input, output, path, security || @__endpoint_security__)
       end
 
       def delete(input:, output:, path: nil, security: nil)
-        register_endpoint(:delete, input, output, path, security)
+        register_endpoint(:delete, input, output, path, security || @__endpoint_security__)
       end
 
       private

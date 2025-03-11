@@ -37,8 +37,11 @@ module Mortymer
         next unless endpoint.routeable?
 
         schema = endpoint.generate_openapi_schema || {}
-        schema = schema.transform_keys { |k| @prefix + k }
-        paths.merge!(schema)
+        schema.each do |path, methods|
+          prefixed_path = @prefix + path
+          paths[prefixed_path] ||= {}
+          paths[prefixed_path].merge!(methods)
+        end
       end || {}
     end
 
