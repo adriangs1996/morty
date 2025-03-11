@@ -27,21 +27,6 @@ Then install it:
 bundle install
 ```
 
-Mortymer requires that every class is autoloaded for it to work. This is deafault rails
-behavior when running in production, but it is disabled by default on development, so,
-we first need to enable eager load
-
-```ruby
-# config/environments/development.rb
-Rails.application.configure do
-  # Settings specified here will take precedence over those in config/application.rb.
-
-  config.eager_load = true # This line is false by default, change it to true
-
-  # other configs hers ...
-end
-```
-
 In rails environments, Mortymer can automatically create the routes for you, it is not necessary
 that you register them one by one.
 
@@ -109,11 +94,10 @@ end
 Set up your API controller with Mortymer's features:
 
 ```ruby
-# app/controllers/api/books_controller.rb
-module Api
-  class BooksController < ApplicationController
-    include Mortymer::DependeciesDsl
+# app/controllers/example_controller.rb
+class ExampleController < ApplicationController
     include Mortymer::ApiMetadata
+    include Mortymer::DependenciesDsl
 
     inject BookService, as: :books
 
@@ -130,13 +114,13 @@ module Api
       attribute :published_year, Coercible::Integer
     end
 
-    # GET /api/books
-    get input: Empty, output: ListAllBooksOutput
+    tags :Books
+
+    get input: Empty, output: ListAllBooksOutput, path: "/examples/list_books"
     def list_all_books(_params)
       ListAllBooksOutput.new(books: @books.list_books)
     end
 
-    # POST /api/books
     post input: CreateBookInput, output: Book
     def create_book(params)
       @books.create_book(
@@ -145,7 +129,6 @@ module Api
         published_year: params.published_year
       )
     end
-  end
 end
 ```
 
@@ -182,3 +165,16 @@ This simple example showcases several of Mortymer's powerful features:
 - ✨ **Type System**: Strong typing with `Mortymer::Models` which are powered by `Dry::Struct`
 - 🔌 **Dependency Injection**: Clean service injection with `inject :book_service`
 - ✅ **Parameter Validation**: Built-in request validation in controllers
+
+## OpenAPI Documentation
+
+Mortymer automatically generates OpenAPI (Swagger) documentation for your API endpoints. After setting up your application, you can access the Swagger UI at `/api-docs`:
+
+![Swagger UI](../assets/swagg.png)
+
+This interactive documentation allows you to:
+
+- Browse all available endpoints
+- See request/response schemas
+- Test API endpoints directly from the browser
+- Download the OpenAPI specification
