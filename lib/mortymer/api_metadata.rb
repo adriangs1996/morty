@@ -23,6 +23,17 @@ module Mortymer
         @__endpoint_security__ = nil
       end
 
+      def tags(*tag_list)
+        @__endpoint_tags__ = tag_list
+      end
+
+      def __default_tag_for_endpoint__
+        # Assuming the endpoint is always defined inside a module
+        # the Tag would be the module of that endpoint. If no module, then
+        # we take the endpoint and remove any endpoint, controller suffix
+        [name.split("::").last(2).first] || [name.gsub(/Controller$/, "").gsub(/Endpoint$/, "")]
+      end
+
       def get(input:, output:, path: nil, security: nil)
         register_endpoint(:get, input, output, path, security || @__endpoint_security__)
       end
@@ -72,7 +83,8 @@ module Mortymer
             output_class: output_class,
             path: path,
             controller_class: self,
-            security: security
+            security: security,
+            tags: @__endpoint_tags__ || __default_tag_for_endpoint__
           }
       end
 

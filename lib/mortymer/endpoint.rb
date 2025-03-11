@@ -14,6 +14,7 @@ module Mortymer
       @controller_class = opts[:controller_class]
       @action = opts[:action]
       @security = opts[:security]
+      @tags = opts[:tags]
     end
 
     def routeable?
@@ -66,7 +67,8 @@ module Mortymer
         operation_id: operation_id,
         parameters: generate_parameters,
         requestBody: generate_request_body,
-        responses: responses
+        responses: responses,
+        tags: @tags
       }
       operation[:security] = security if @security
       {
