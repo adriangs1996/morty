@@ -19,7 +19,7 @@ module Mortymer
   # Global configuration for Mortymer
   class Configuration
     attr_accessor :container, :serve_swagger, :swagger_title, :swagger_path, :swagger_root, :api_version,
-                  :api_description, :security_schemes
+                  :api_description, :security_schemes, :api_prefix
 
     def initialize
       @container = Mortymer::Container.new
@@ -30,6 +30,7 @@ module Mortymer
       @api_description = "An awsome API developed with MORTYMER"
       @api_version = "v1"
       @security_schemes = {}
+      @api_prefix = "/api/v1"
     end
   end
 end

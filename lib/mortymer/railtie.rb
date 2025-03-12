@@ -27,7 +27,8 @@ module Mortymer
             title: Mortymer.config.swagger_title,
             version: Mortymer.config.api_version,
             description: Mortymer.config.api_description,
-            security_schemes: Mortymer.config.security_schemes
+            security_schemes: Mortymer.config.security_schemes,
+            prefix: Mortymer.config.api_prefix
           )
 
           # Save OpenAPI spec to public directory

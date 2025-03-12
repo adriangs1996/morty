@@ -28,7 +28,7 @@ module Mortymer
 
         @drawer.send(
           endpoint.http_method,
-          endpoint.path,
+          "#{Mortymer.config.api_prefix}#{endpoint.path}",
           to: "#{endpoint.controller_name.gsub(/_controller$/, "")}##{endpoint.action}",
           as: "#{endpoint.http_method}_#{endpoint.api_name}"
         )
