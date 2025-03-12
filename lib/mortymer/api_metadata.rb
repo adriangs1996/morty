@@ -69,7 +69,7 @@ module Mortymer
       def rails_wrap_method_with_no_params_call(method_name, input_class)
         original_method = instance_method(method_name)
         define_method(method_name) do
-          input = input_class.new(params.to_unsafe_h.to_h.deep_transform_keys(&:to_sym))
+          input = input_class.structify(params.to_unsafe_h.to_h.deep_transform_keys(&:to_sym))
           output = original_method.bind_call(self, input)
           render json: output.to_h, status: :ok
         end

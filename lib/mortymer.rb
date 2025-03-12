@@ -3,7 +3,9 @@
 
 require "dry/struct"
 require "mortymer/configuration"
+require "mortymer/moldeable"
 require "mortymer/model"
+require "mortymer/contract"
 require "mortymer/endpoint"
 require "mortymer/dry_swagger"
 require "mortymer/endpoint_registry"
