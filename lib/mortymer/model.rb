@@ -2,6 +2,8 @@
 
 require "dry/swagger/documentation_generator"
 require_relative "moldeable"
+require_relative "types"
+require_relative "generator"
 
 module Mortymer
   # A base model for defining schemas
@@ -10,7 +12,7 @@ module Mortymer
     include Dry.Types()
 
     def self.json_schema
-      Dry::Swagger::DocumentationGenerator.new.from_struct(self)
+      Generator.new.from_struct(self)
     end
 
     def self.structify(params)

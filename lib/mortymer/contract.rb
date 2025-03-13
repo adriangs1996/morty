@@ -3,6 +3,7 @@
 require_relative "moldeable"
 require "dry/validation"
 require "dry/validation/contract"
+require_relative "generator"
 
 module Mortymer
   # A base model for defining schemas
@@ -20,7 +21,7 @@ module Mortymer
     end
 
     def self.json_schema
-      Dry::Swagger::DocumentationGenerator.new.from_validation(self)
+      Generator.new.from_validation(self)
     end
 
     def self.structify(params)

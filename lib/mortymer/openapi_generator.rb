@@ -2,13 +2,14 @@
 
 require_relative "endpoint_registry"
 require_relative "utils/string_transformations"
+require_relative "generator"
 
 module Mortymer
   # Generate an openapi doc based on the registered endpoints
   class OpenapiGenerator
     include Utils::StringTransformations
 
-    def initialize(prefix: "", title: "Rick on Rails API", version: "v1", description: "", registry: [],
+    def initialize(prefix: "", title: "Rick on Rails API", version: "v1", description: "", registry: [], # rubocop:disable Metrics/ParameterLists
                    security_schemes: {})
       @prefix = prefix
       @title = title
@@ -73,7 +74,7 @@ module Mortymer
             if endpoint.input_class.respond_to?(:json_schema)
               endpoint.input_class.json_schema
             else
-              Dry::Swagger::DocumentationGenerator.new.from_struct(endpoint.input_class)
+              Generator.new.from_struct(endpoint.input_class)
             end
         end
 
@@ -83,7 +84,7 @@ module Mortymer
           if endpoint.output_class.respond_to?(:json_schema)
             endpoint.output_class.json_schema
           else
-            Dry::Swagger::DocumentationGenerator.new.from_struct(endpoint.output_class)
+            Generator.new.from_struct(endpoint.output_class)
           end
       end
       schemas

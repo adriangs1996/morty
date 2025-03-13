@@ -2,6 +2,9 @@
 # typed: true
 
 require "dry/struct"
+require "mortymer/types"
+require "mortymer/uploaded_file"
+require "mortymer/uploaded_files"
 require "mortymer/configuration"
 require "mortymer/moldeable"
 require "mortymer/model"

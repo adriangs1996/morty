@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative "generator"
+
 module Mortymer
   # Represents an endpoint in a given system
-  class Endpoint
+  class Endpoint # rubocop:disable Metrics/ClassLength
     attr_reader :http_method, :path, :input_class, :output_class, :controller_class, :action, :name
 
     def initialize(opts = {})
@@ -37,10 +39,10 @@ module Mortymer
       end.join("/")
     end
 
-    def generate_openapi_schema # rubocop:disable Metrics/MethodLength
+    def generate_openapi_schema # rubocop:disable Metrics/MethodLength,Metrics/AbcSize
       return unless defined?(@input_class) && defined?(@output_class)
 
-      input_schema = @input_class.respond_to?(:json_schema) ? @input_class.json_schema : Dry::Swagger::DocumentationGenerator.new.from_struct(@input_class)
+      input_schema = @input_class.respond_to?(:json_schema) ? @input_class.json_schema : Generator.new.from_struct(@input_class)
       responses = generate_responses
 
       # Add 422 response if there are required properties or non-string types that need coercion
@@ -147,7 +149,7 @@ module Mortymer
       schema = if @input_class.respond_to?(:json_schema)
                  @input_class.json_schema
                else
-                 Dry::Swagger::DocumentationGenerator.new.from_struct(@input_class)
+                 Generator.new.from_struct(@input_class)
                end
       schema[:properties]&.map do |name, property|
         {
@@ -162,10 +164,22 @@ module Mortymer
     def generate_request_body
       return unless @input_class && %i[post put].include?(@http_method)
 
+      schema = if @input_class.respond_to?(:json_schema)
+                 @input_class.json_schema
+               else
+                 Generator.new.from_struct(@input_class)
+               end
+
+      # Check if any property is a File type
+      has_file = schema[:properties]&.any? do |_, property|
+        property[:format] == :binary
+      end
+
+      content_type = has_file ? "multipart/form-data" : "application/json"
       {
         required: true,
         content: {
-          "application/json" => {
+          content_type => {
             schema: class_ref(@input_class)
           }
         }
