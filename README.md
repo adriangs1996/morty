@@ -8,10 +8,18 @@
 ██║ ╚═╝ ██║╚██████╔╝██║  ██║   ██║      ██║   ██║ ╚═╝ ██║███████╗██║  ██║
 ```
 
-Mortymer is a Ruby gem that simplifies API endpoint management and documentation for Ruby on Rails applications. It provides a clean DSL for defining API endpoints with input/output contracts and automatically generates OpenAPI documentation.
+Mortymer is a Ruby gem that simplifies API endpoint management and documentation for Ruby on Rails applications. It provides a clean DSL for defining API endpoints with input/output contracts and automatically generates OpenAPI documentation. It provides a really convenient way to handle
+dependency Injection in Ruby, with an explicit approach but a really easy setup. No complex container initialization or registration (although 
+it is supported). Fully compatible with ruby constructors. 
 
 [![Gem Version](https://badge.fury.io/rb/morty.svg)](https://badge.fury.io/rb/morty)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+## !IMPORTANT
+
+This gem is going under rapid development and as new features are added it might brake
+compatibility from one version to another. I plan to give a stable release with version
+0.1.0 and from there, follow semantic versioning.
 
 ## Features
 
