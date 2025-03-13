@@ -50,6 +50,23 @@ module Mortymer
         register_endpoint(:delete, input, output, path, security || @__endpoint_security__)
       end
 
+      # Register an exception handler for the next endpoint
+      # @param exception [Class] The exception class to handle
+      # @param status [Symbol, Integer] The HTTP status code to return
+      # @param output [Class] The output schema class for the error response
+      # @yield [exception] Optional block to transform the exception into a response
+      # @yieldparam exception [Exception] The caught exception
+      # @yieldreturn [Hash] The response body
+      def handles_exception(exception, status: 400, output: nil, &block)
+        @__endpoint_exception_handlers__ ||= []
+        @__endpoint_exception_handlers__ << {
+          exception: exception,
+          status: status,
+          output: output,
+          handler: block
+        }
+      end
+
       private
 
       def method_added(method_name)
@@ -60,18 +77,30 @@ module Mortymer
           name: reflect_method_name(method_name), action: method_name
         ))
         input_class = @__endpoint_signature__[:input_class]
+        handlers = @__endpoint_signature__[:exception_handlers]
         @__endpoint_signature__ = nil
         return unless defined?(::Rails) && ::Rails.application.config.morty.wrap_methods
 
-        rails_wrap_method_with_no_params_call(method_name, input_class)
+        rails_wrap_method_with_no_params_call(method_name, input_class, handlers)
       end
 
-      def rails_wrap_method_with_no_params_call(method_name, input_class)
+      def rails_wrap_method_with_no_params_call(method_name, input_class, handlers)
         original_method = instance_method(method_name)
         define_method(method_name) do
           input = input_class.structify(params.to_unsafe_h.to_h.deep_transform_keys(&:to_sym))
           output = original_method.bind_call(self, input)
           render json: output.to_h, status: :ok
+        rescue StandardError => e
+          handler = handlers.find { |h| e.is_a?(h[:exception]) }
+          raise unless handler
+
+          response = if handler[:handler]
+                       handler[:handler].call(e)
+                     else
+                       { error: e.message || e.class.name.underscore }
+                     end
+
+          render json: response, status: handler[:status]
         end
       end
 
@@ -84,8 +113,10 @@ module Mortymer
             path: path,
             controller_class: self,
             security: security,
-            tags: @__endpoint_tags__ || __default_tag_for_endpoint__
+            tags: @__endpoint_tags__ || __default_tag_for_endpoint__,
+            exception_handlers: [*(@__endpoint_exception_handlers__ || [])]
           }
+        @__endpoint_exception_handlers__ = nil
       end
 
       def reflect_method_name(method_name)

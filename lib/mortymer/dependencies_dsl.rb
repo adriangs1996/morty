@@ -52,7 +52,7 @@ module Mortymer
         container ||= Mortymer.config&.container || Container.new
         self.class.dependencies.each do |dep|
           value = if overrides.key?(dep[:var_name].to_sym)
-                    overrides[dep[:var_name].to_sym]
+                    overrides.delete(dep[:var_name].to_sym)
                   else
                     container.resolve_constant(dep[:constant])
                   end

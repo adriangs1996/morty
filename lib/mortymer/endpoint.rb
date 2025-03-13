@@ -15,6 +15,7 @@ module Mortymer
       @action = opts[:action]
       @security = opts[:security]
       @tags = opts[:tags]
+      @exception_handlers = opts[:exception_handlers]
     end
 
     def routeable?
@@ -40,16 +41,7 @@ module Mortymer
       return unless defined?(@input_class) && defined?(@output_class)
 
       input_schema = @input_class.respond_to?(:json_schema) ? @input_class.json_schema : Dry::Swagger::DocumentationGenerator.new.from_struct(@input_class)
-      responses = {
-        "200" => {
-          description: "Successful response",
-          content: {
-            "application/json" => {
-              schema: class_ref(@output_class)
-            }
-          }
-        }
-      }
+      responses = generate_responses
 
       # Add 422 response if there are required properties or non-string types that need coercion
       if validations?(input_schema)
@@ -70,6 +62,7 @@ module Mortymer
         responses: responses,
         tags: @tags
       }
+
       operation[:security] = security if @security
       {
         path.to_s => {
@@ -79,6 +72,49 @@ module Mortymer
     end
 
     private
+
+    def generate_responses
+      responses = {
+        "200" => {
+          description: "Successful response",
+          content: {
+            "application/json" => {
+              schema: class_ref(@output_class)
+            }
+          }
+        }
+      }
+
+      @exception_handlers&.each do |handler|
+        status_code = if handler[:status].is_a?(Symbol)
+                        Rack::Utils::SYMBOL_TO_STATUS_CODE[handler[:status]].to_s
+                      else
+                        handler[:status].to_s
+                      end
+
+        responses[status_code] = {
+          description: handler[:exception].name,
+          content: {
+            "application/json" => {
+              schema: if handler[:output]
+                        class_ref(handler[:output])
+                      else
+                        {
+                          type: "object",
+                          properties: {
+                            error: {
+                              type: "string"
+                            }
+                          }
+                        }
+                      end
+            }
+          }
+        }
+      end
+
+      responses
+    end
 
     def validations?(schema)
       return false unless schema
