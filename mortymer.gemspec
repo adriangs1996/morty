@@ -33,13 +33,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   # Uncomment to register a new dependency of your gem
-  spec.add_dependency "dry-monads", "~> 1.7"
-  spec.add_dependency "dry-struct", "~> 1.7"
+  spec.add_dependency "dry-struct", "~> 1.8"
   spec.add_dependency "dry-swagger", "~> 2.0"
-  spec.add_dependency "dry-system", "~> 1.2"
   spec.add_dependency "dry-validation", "~> 1.11"
 
   spec.add_development_dependency "rails", "~> 8.0"
-  # For more information and examples about making a new gem, check out our
-  # guide at: https://bundler.io/guides/creating_gem.html
 end

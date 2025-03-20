@@ -17,9 +17,6 @@ gem "guard", "~> 2.19", group: :development
 
 gem "guard-shell", "~> 0.7.2", group: :development
 
-gem "dry-monads", "~> 1.7"
 gem "dry-struct", "~> 1.7"
-gem "dry-system", "~> 1.2"
-gem "dry-validation", "~> 1.11"
-
 gem "dry-swagger", "~> 2.0"
+gem "dry-validation", "~> 1.11"
