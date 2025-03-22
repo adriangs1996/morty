@@ -36,7 +36,7 @@ RSpec.describe Mortymer::Container do # rubocop:disable Metrics/BlockLength
       expect(described_class.resolve_constant(MyLogger)).to be_a(MyLogger)
     end
 
-    it "caches block resolution results" do
+    it "does not cache block resolution results" do
       counter = 0
       described_class.register_constant(MyLogger) do
         counter += 1
@@ -46,7 +46,7 @@ RSpec.describe Mortymer::Container do # rubocop:disable Metrics/BlockLength
       described_class.resolve_constant(MyLogger)
       described_class.resolve_constant(MyLogger)
 
-      expect(counter).to eq(1)
+      expect(counter).to eq(2)
     end
 
     it "resolves dependencies for classes using DependenciesDsl" do

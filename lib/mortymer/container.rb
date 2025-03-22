@@ -108,9 +108,7 @@ module Mortymer
     def resolve_implementation(implementation, key, resolution_stack)
       case implementation
       when Proc
-        result = instance_exec(&implementation)
-        registry[key] = result
-        result
+        instance_exec(&implementation)
       when Class
         resolve_class(implementation, key, resolution_stack)
       else
@@ -119,14 +117,12 @@ module Mortymer
     end
 
     # Resolve a class implementation with its dependencies
-    def resolve_class(klass, key, resolution_stack)
-      instance = if klass.respond_to?(:dependencies)
-                   inject_dependencies(klass, resolution_stack)
-                 else
-                   klass.new
-                 end
-      registry[key] = instance
-      instance
+    def resolve_class(klass, _key, resolution_stack)
+      if klass.respond_to?(:dependencies)
+        inject_dependencies(klass, resolution_stack)
+      else
+        klass.new
+      end
     end
 
     # Inject dependencies into a new instance
