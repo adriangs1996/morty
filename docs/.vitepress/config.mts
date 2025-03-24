@@ -7,7 +7,10 @@ export default defineConfig({
   description:
     "Standalone API definition for ruby frameworks based on dry.rb. Rails compatible from day 0 with a full Ruby flavored dependency injection engine.",
   markdown: {
-    theme: "catppuccin-mocha",
+    theme: {
+      light: "catppuccin-latte",
+      dark: "catppuccin-mocha",
+    },
   },
   themeConfig: {
     nav: [
@@ -36,7 +39,17 @@ export default defineConfig({
             { text: "Type System", link: "/guide/type-system" },
             {
               text: "Dependency Injection",
-              link: "/guide/dependency-injection",
+              items: [
+                {
+                  text: "Introduction to DI in Ruby",
+                  link: "/guide/dependency-injection",
+                },
+
+                {
+                  text: "DI in Mortymer",
+                  link: "/guide/mortymer-dependency-injection",
+                },
+              ],
             },
             { text: "Error Handling", link: "/guide/error-handling" },
           ],
@@ -63,12 +76,12 @@ export default defineConfig({
     },
 
     socialLinks: [
-      { icon: "github", link: "https://github.com/yourusername/morty" },
+      { icon: "github", link: "https://github.com/adriangs1996/morty" },
     ],
 
     footer: {
       message: "Released under the MIT License.",
-      copyright: "Copyright © 2024-present",
+      copyright: "Copyright © 2025-present",
     },
   },
 });
