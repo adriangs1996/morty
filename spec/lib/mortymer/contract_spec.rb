@@ -10,6 +10,7 @@ RSpec.describe Mortymer::Contract do
       required(:age).filled(:integer)
       required(:active).filled(:bool)
     end
+    compile!
   end
 
   # Schema with nested object
@@ -24,6 +25,7 @@ RSpec.describe Mortymer::Contract do
         end
       end
     end
+    compile!
   end
 
   # Schema with arrays
@@ -38,6 +40,7 @@ RSpec.describe Mortymer::Contract do
         end
       end
     end
+    compile!
   end
 
   # Schema with optional fields and defaults
@@ -51,6 +54,7 @@ RSpec.describe Mortymer::Contract do
         optional(:updated_at).filled(:string)
       end
     end
+    compile!
   end
 
   # Schema with enums and custom types
@@ -59,6 +63,7 @@ RSpec.describe Mortymer::Contract do
       required(:role).filled(:string).value(included_in?: %w[admin user guest])
       required(:priority).filled(:integer).value(included_in?: [1, 2, 3])
     end
+    compile!
   end
 
   describe ".structify" do

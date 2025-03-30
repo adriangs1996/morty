@@ -15,10 +15,16 @@ class MyExampleContract < Mortymer::Contract
   params do
     required(:age).value(Integer, gt?: 10)
   end
+  compile!
 end
 
 class TestClass
   include Mortymer::Sigil
+
+  sign MyExampleContract, returns: MyModel
+  def pass_contract(params)
+    { age: params.age * 2 }
+  end
 
   sign MyModel, returns: MyModel
   def pass_model(model)
@@ -56,6 +62,20 @@ RSpec.describe Mortymer::Sigil do # rubocop:disable Metrics/BlockLength
   let(:test_instance) { TestClass.new }
 
   describe "Model and Contract integration" do
+    context "receiving a contract" do
+      it "should compile input to a model" do
+        expect { test_instance.pass_contract({ age: 20 }) }.not_to raise_error
+      end
+
+      it "should return a parsed model even if the function returns a hash" do
+        expect(test_instance.pass_contract({ age: 20 })).to be_a(MyModel)
+      end
+
+      it "should validate input with contract rules" do
+        expect { test_instance.pass_contract({ age: 10 }) }.to raise_error(Mortymer::Contract::ContractError)
+      end
+    end
+
     context "with an instance of model" do
       it "should not throw an error" do
         expect { test_instance.pass_model(MyModel.new(age: 20)) }.not_to raise_error

@@ -16,7 +16,7 @@ module Mortymer
     end
 
     def self.structify(params)
-      new(params)
+      call(params)
     end
   end
 end

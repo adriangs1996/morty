@@ -37,5 +37,14 @@ module Mortymer
 
       __internal_struct_repr__.new(**result.to_h)
     end
+
+    def self.compile!
+      # Force eager compilation of the internal struct representation.
+      # This provides an optimization by precompiling the struct when
+      # the class is defined rather than waiting for the first use.
+      # The compilation result is memoized, so subsequent accesses
+      # will reuse the compiled struct.
+      __internal_struct_repr__
+    end
   end
 end

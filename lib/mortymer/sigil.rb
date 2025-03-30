@@ -42,7 +42,7 @@ module Mortymer
             end
 
             begin
-              procced_args << type.call(arg)
+              procced_args << (type.respond_to?(:structify) ? type.structify(arg) : type.call(arg))
             rescue Dry::Types::CoercionError => e
               raise TypeError, "Invalid type for argument #{idx}: expected #{type}, got #{arg.class} - #{e.message}"
             end
@@ -56,7 +56,7 @@ module Mortymer
             end
 
             begin
-              procced_kwargs[key] = type.call(value)
+              procced_kwargs[key] = (type.respond_to?(:structify) ? type.structify(value) : type.call(value))
             rescue Dry::Types::CoercionError => e
               raise TypeError,
                     "Invalid type for keyword argument #{key}: expected #{type}, got #{value.class} - #{e.message}"
@@ -69,7 +69,7 @@ module Mortymer
           # Validate return type if specified
           if (return_type = signature[:returns])
             begin
-              return return_type.call(result)
+              return return_type.respond_to?(:structify) ? return_type.structify(result) : return_type.call(result)
             rescue Dry::Types::CoercionError => e
               raise TypeError, "Invalid return type: expected #{return_type}, got #{result.class} - #{e.message}"
             end
