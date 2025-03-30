@@ -2,6 +2,8 @@
 # typed: true
 
 require "dry/struct"
+require "dry/schema"
+Dry::Schema.load_extensions(:json_schema)
 require "mortymer/types"
 require "mortymer/uploaded_file"
 require "mortymer/uploaded_files"
@@ -18,5 +20,7 @@ require "mortymer/openapi_generator"
 require "mortymer/container"
 require "mortymer/dependencies_dsl"
 require "mortymer/security_schemes"
+require "mortymer/struct_compiler"
+require "mortymer/sigil"
 require "mortymer/rails" if defined?(Rails)
 require "mortymer/railtie" if defined?(Rails::Railtie)
