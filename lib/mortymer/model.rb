@@ -9,14 +9,14 @@ module Mortymer
   # A base model for defining schemas
   class Model < Dry::Struct
     include Mortymer::Moldeable
-    include Dry.Types()
+    include Mortymer::Types
 
     def self.json_schema
       Generator.new.from_struct(self)
     end
 
     def self.structify(params)
-      new(params)
+      call(params)
     end
   end
 end
