@@ -19,8 +19,9 @@ module Mortymer
 
       # Hook called when a method is defined
       def method_added(method_name)
-        return super if @pending_type_signature.nil?
-        return super if @processing_type_check
+        super
+        return if @pending_type_signature.nil?
+        return if @processing_type_check
 
         signature = @pending_type_signature
         @pending_type_signature = nil
@@ -79,9 +80,7 @@ module Mortymer
         end
 
         @processing_type_check = false
-
         # Call super to maintain compatibility with other method hooks
-        super
       end
     end
 

@@ -28,7 +28,8 @@ module Mortymer
             version: Mortymer.config.api_version,
             description: Mortymer.config.api_description,
             security_schemes: Mortymer.config.security_schemes,
-            prefix: Mortymer.config.api_prefix
+            prefix: Mortymer.config.api_prefix,
+            openapi_servers: Mortymer.config.openapi_servers
           )
 
           # Save OpenAPI spec to public directory

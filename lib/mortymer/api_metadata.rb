@@ -4,12 +4,14 @@ require_relative "dry_swagger"
 require_relative "endpoint_registry"
 require_relative "endpoint"
 require_relative "utils/string_transformations"
+require_relative "sigil"
 
 module Mortymer
   # Include this module in your classes to register
   # and configure your classes as API endpoints.
   module ApiMetadata
     def self.included(base)
+      base.include(Sigil)
       base.extend(ClassMethods)
     end
 
@@ -84,12 +86,22 @@ module Mortymer
         rails_wrap_method_with_no_params_call(method_name, input_class, handlers)
       end
 
-      def rails_wrap_method_with_no_params_call(method_name, input_class, handlers)
+      def rails_wrap_method_with_no_params_call(method_name, _input_class, handlers)
         original_method = instance_method(method_name)
         define_method(method_name) do
-          input = input_class.structify(params.to_unsafe_h.to_h.deep_transform_keys(&:to_sym))
+          # Delegate input handling and checking to Sigil. It will coerce and
+          # validate contracts and structs
+          input = params.to_unsafe_h.to_h.deep_transform_keys(&:to_sym)
           output = original_method.bind_call(self, input)
-          render json: output.to_h, status: :ok
+          # Output might not be validated, so if it is a hash, we will simple
+          # pass it through, otherwise we will call a to_h method
+          if output.respond_to?(:to_h)
+            render json: output.to_h, status: :ok
+          elsif output.respond_to?(:to_json)
+            render json: output.to_json, status: :ok
+          else
+            render json: output, status: :ok
+          end
         rescue StandardError => e
           handler = handlers.find { |h| e.is_a?(h[:exception]) }
           raise unless handler
@@ -105,6 +117,7 @@ module Mortymer
       end
 
       def register_endpoint(http_method, input_class, output_class, path, security)
+        sign input_class, returns: output_class
         @__endpoint_signature__ =
           {
             http_method: http_method,

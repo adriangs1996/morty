@@ -10,18 +10,20 @@ module Mortymer
     include Utils::StringTransformations
 
     def initialize(prefix: "", title: "Rick on Rails API", version: "v1", description: "", registry: [], # rubocop:disable Metrics/ParameterLists
-                   security_schemes: {})
+                   security_schemes: {}, openapi_servers: [])
       @prefix = prefix
       @title = title
       @version = version
       @description = description
       @endpoints_registry = registry
       @security_schemes = security_schemes
+      @openapi_servers = openapi_servers
     end
 
     def generate
       {
         openapi: "3.0.1",
+        servers: @openapi_servers,
         info: { title: @title, version: @version, description: @description },
         paths: generate_paths,
         components: {

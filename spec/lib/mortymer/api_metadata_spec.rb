@@ -284,6 +284,56 @@ RSpec.describe Mortymer::ApiMetadata do # rubocop:disable Metrics/BlockLength
     end
   end
 
+  describe "integration with Sigil" do # rubocop:disable Metrics/BlockLength
+    before do
+      Mortymer::EndpointRegistry.registry.clear
+    end
+
+    it "works with both Sigil and ApiMetadata" do
+      class IntegratedController # rubocop:disable Lint/ConstantDefinitionInBlock
+        include Mortymer::ApiMetadata
+
+        get input: TestInput, output: TestOutput
+        def call(params)
+          puts params.class
+        end
+      end
+
+      endpoint = Mortymer::EndpointRegistry.registry.last
+      expect(endpoint.routeable?).to be true
+      expect(endpoint.http_method).to eq(:get)
+    end
+
+    it "maintains proper method hook chain order" do
+      HOOKS_CALLS = [] # rubocop:disable Lint/ConstantDefinitionInBlock
+
+      module TestHookTracker # rubocop:disable Lint/ConstantDefinitionInBlock
+        def method_added(name)
+          super
+          HOOKS_CALLS << "#{self.name}##{name}"
+        end
+      end
+
+      class TrackedController # rubocop:disable Lint/ConstantDefinitionInBlock
+        extend TestHookTracker
+        include Mortymer::ApiMetadata
+
+        get input: TestInput, output: TestOutput
+        def call(params)
+          TestOutput.new(
+            id: 1, name: params.name, created_at: DateTime.now
+          )
+        end
+      end
+
+      # Verify both modules processed the method
+      expect(HOOKS_CALLS).to include("TrackedController#call")
+      expect(Mortymer::EndpointRegistry.registry.last.routeable?).to be true
+      controller = TrackedController.new
+      expect(controller.call({ name: "Kmi", age: 28 })).to be_a(TestOutput)
+    end
+  end
+
   describe "operation ID generation" do # rubocop:disable Metrics/BlockLength
     before do
       Mortymer::EndpointRegistry.registry.clear
