@@ -16,14 +16,10 @@ module Mortymer
     end
 
     def self.structify(params)
-      call(params)
-    end
-
-    def self.call(value)
-      if value.instance_of?(self.class)
-        value
+      if params.instance_of?(self.class)
+        params
       else
-        super
+        call(params)
       end
     end
 
