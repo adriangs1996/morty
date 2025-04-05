@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "types"
+
 module Mortymer
   # Sigil provides symbolic type checking for input and outputs
   # of method calls using dry-types

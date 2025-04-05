@@ -2,7 +2,42 @@
 
 ## Overview
 
-Mortymer provides a robust type system through the `Sigil` module that leverages `dry-types` to enable runtime type checking for method inputs and outputs. This guide will walk you through how to use type checking in your Ruby code.
+Mortymer provides a way to enforce the types contracts for inputs and
+outputs of your methods through the `Sigil` module that leverages `dry-types`
+to enable runtime type checking. Not only that, but, it also will try to coerce
+the given parameters to the declared type, and will check validation contracts
+and rules for your inputs and outputs. This is not intended to be a replacement
+for Type Checkers like Sorbet or Steep, but rather a nice utility to avoid guard
+code like:
+
+```ruby
+def func(params)
+  result = MyContract.new.call(params)
+  if result.errors.empty?
+    result[:age].to_i + 10
+  else
+    raise StandardError, result.errors
+  end
+end
+```
+
+The above snippet is really common when dealing with validation (you may use `#instance_of?` method as well,
+or strong parameters or whatever, but the essence is that you need to declare the shape of the data
+that comes in and out of your methods).
+
+Using Mortymer's Sigil, the above will translate to pretty much the following code:
+
+```ruby
+sign MyContract
+def func(params)
+  params.age + 10
+end
+
+func(MyContract.structify({age: 10})) # Will work
+func(age: 10)  # Will work, the params would be { age: 10 } which will be coerced and validated with MyCotnract
+func(age: "10") # Will also work, if MyContract is Coercing the age to Integer
+func(age: "asd") # will raise a meaningful error
+```
 
 ## Basic Usage
 
