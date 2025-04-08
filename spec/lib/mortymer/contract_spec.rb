@@ -224,6 +224,45 @@ RSpec.describe Mortymer::Contract do
       end
     end
 
+    context "with already structified input" do
+      it "returns the input directly if it's already an instance of the internal struct" do
+        # First create a valid struct instance
+        params = {
+          name: "John Doe",
+          age: 30,
+          active: true
+        }
+        struct_instance = BasicContract.structify(params)
+
+        # Now pass that instance back to structify
+        result = BasicContract.structify(struct_instance)
+
+        # Should be the exact same object (not just equal)
+        expect(result.object_id).to eq(struct_instance.object_id)
+      end
+
+      it "still validates if input is a different struct type" do
+        # Create a similar but different struct class
+        different_struct = Class.new(Mortymer::Model) do
+          attribute :name, Mortymer::Model::String
+          attribute :age, Mortymer::Model::Integer
+          attribute :active, Mortymer::Model::Bool
+        end
+
+        # Create an instance of the different struct
+        different_instance = different_struct.new(
+          name: "John Doe",
+          age: 30,
+          active: true
+        )
+
+        # Should create a new struct of the correct type
+        result = BasicContract.structify(different_instance)
+        expect(result).to be_an_instance_of(BasicContract.__internal_struct_repr__)
+        expect(result).not_to be_an_instance_of(different_struct)
+      end
+    end
+
     context "with symbol keys and values" do
       it "handles symbol keys in input" do
         params = {

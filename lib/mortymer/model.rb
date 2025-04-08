@@ -24,7 +24,13 @@ module Mortymer
     end
 
     def [](key)
-      @attributes[key.to_sym]
+      public_send(key)
     end
+
+    def key?(attr)
+      attributes.key?(attr.to_sym)
+    end
+
+    alias has_key? key?
   end
 end

@@ -24,7 +24,7 @@ module Mortymer
     end
 
     def self.__internal_struct_repr__
-      @__internal_struct_repr__ || StructCompiler.new.compile(schema.json_schema)
+      @__internal_struct_repr__ ||= StructCompiler.new.compile(schema.json_schema)
     end
 
     def self.json_schema
@@ -32,6 +32,11 @@ module Mortymer
     end
 
     def self.structify(params)
+      # If params are already built using the internal struct, then there is
+      # no need to re-validate it
+      return params if params.instance_of?(__internal_struct_repr__)
+
+      params = params.to_h if params.is_a?(Dry::Struct)
       result = new.call(params)
       raise ContractError, result.errors.to_h unless result.errors.empty?
 
