@@ -45,7 +45,15 @@ module Mortymer
             end
 
             begin
-              procced_args << (type.respond_to?(:structify) ? type.structify(arg) : type.call(arg))
+              procced_args << if type.respond_to?(:structify)
+                                type.structify(arg)
+                              elsif type.respond_to?(:call)
+                                type.call(arg)
+                              elsif arg.is_a?(type)
+                                arg
+                              else
+                                raise TypeError, "Invalid type for argument #{idx}: expected #{type}, got #{arg.class}"
+                              end
             rescue Dry::Types::CoercionError => e
               raise TypeError, "Invalid type for argument #{idx}: expected #{type}, got #{arg.class} - #{e.message}"
             end
@@ -72,7 +80,18 @@ module Mortymer
           # Validate return type if specified
           if (return_type = signature[:returns])
             begin
-              return return_type.respond_to?(:structify) ? return_type.structify(result) : return_type.call(result)
+              # A mortymer model or contract
+              if return_type.respond_to?(:structify)
+                return return_type.structify(result)
+              # A dry type
+              elsif return_type.respond_to?(:call)
+                return return_type.call(result)
+              # A custom object
+              elsif result.is_a?(return_type)
+                return result
+              else
+                raise TypeError, "Invalid return type: expected #{return_type}, got #{result.class}"
+              end
             rescue Dry::Types::CoercionError => e
               raise TypeError, "Invalid return type: expected #{return_type}, got #{result.class} - #{e.message}"
             end
