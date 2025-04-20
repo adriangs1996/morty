@@ -36,6 +36,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dry-struct", "~> 1.8"
   spec.add_dependency "dry-swagger", "~> 2.0"
   spec.add_dependency "dry-validation", "~> 1.11"
+  spec.add_dependency "sorbet-runtime", "~> 0.5.12026"
 
   spec.add_development_dependency "rails", "~> 8.0"
 end

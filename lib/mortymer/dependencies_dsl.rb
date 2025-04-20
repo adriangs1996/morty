@@ -31,6 +31,7 @@ module Mortymer
       def inject(constant, as: nil)
         var_name = (as || infer_var_name(constant)).to_s
         dependencies << { constant: constant, var_name: var_name }
+        attr_reader(var_name)
       end
 
       private

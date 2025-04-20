@@ -20,3 +20,7 @@ gem "guard-shell", "~> 0.7.2", group: :development
 gem "dry-struct", "~> 1.7"
 gem "dry-swagger", "~> 2.0"
 gem "dry-validation", "~> 1.11"
+
+gem "tapioca", "~> 0.16.11"
+
+gem "sorbet-runtime", "~> 0.5.12026"
